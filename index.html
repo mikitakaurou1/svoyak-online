@@ -1,32 +1,109 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Свояк онлайн</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#0b1030;color:#fff}.w{max-width:960px;margin:0 auto;padding:14px}input,button{font:inherit;padding:12px 14px;border-radius:10px;border:0;margin:4px 0}input{background:#1b2260;color:#fff;width:100%}button{background:#ffd23f;color:#111;font-weight:700;cursor:pointer;width:100%}button.g{background:#2ecc71}button.r{background:#e74c3c;color:#fff}button.s{background:#3a4399;color:#fff}.row{display:flex;gap:10px}.row>*{flex:1}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.cell{background:#1b2fbf;text-align:center;padding:16px 2px;border-radius:8px;font-size:20px;font-weight:800;color:#ffd23f}.cell.u{background:#10163f;color:transparent}.cat{background:#27369a;padding:8px 3px;text-align:center;border-radius:8px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}.pl{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.p{background:#1b2260;border-radius:10px;padding:8px 12px}.p.b{outline:3px solid #ffd23f}.q{background:#1b2fbf;border-radius:14px;padding:22px;text-align:center;margin-top:12px}.q h2{font-size:26px;margin:8px 0}.a{color:#2ecc71;font-weight:700}.mod{background:#c0392b;border-radius:8px;padding:8px;margin-bottom:8px;font-weight:700}.ok{color:#2ecc71}.no{color:#ff6b6b}</style></head><body><div class='w' id='app'></div>
+<!DOCTYPE html><html lang='ru'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><meta name='theme-color' content='#0e0f0c'><title>Свояк онлайн</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;800&family=Onest:wght@400;600;800&display=swap' rel='stylesheet'>
+<script src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'></script>
+<style>
+:root{--bg:#0e0f0c;--panel:#181a15;--panel2:#20231b;--line:#33372b;--ink:#f1efe6;--mute:#8d9080;--acc:#c8f23a;--hot:#ff6a2b;--bad:#ff5c5c;--ok:#5fe08a;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Onest,system-ui,sans-serif}
+body{background-image:radial-gradient(#23261e 1px,transparent 1px);background-size:22px 22px;min-height:100vh}
+.w{max-width:980px;margin:0 auto;padding:12px 12px 130px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:12px;color:var(--mute);padding:6px 0 10px}
+.top b{color:var(--acc)}
+button{font:inherit;cursor:pointer;border:2px solid #000;border-radius:6px;padding:13px 16px;margin:6px 0;width:100%;background:var(--acc);color:#0e0f0c;font-weight:800;box-shadow:3px 3px 0 #000;transition:transform .08s,box-shadow .08s;touch-action:manipulation}
+button:active{transform:translate(3px,3px);box-shadow:0 0 0 #000}
+button.s{background:var(--panel2);color:var(--ink);border-color:var(--line)}
+button.g{background:var(--ok)}button.r{background:var(--bad)}
+.chip{width:auto;margin:0;padding:6px 10px;box-shadow:none;background:var(--panel);color:var(--ink);border:2px solid var(--line);font-family:var(--mono);font-size:12px;font-weight:500}
+input{background:var(--panel);border:2px solid var(--line);color:var(--ink);border-radius:6px;padding:13px;width:100%;font:inherit;margin:6px 0}
+input:focus{outline:none;border-color:var(--acc)}
+.lab{font-family:var(--mono);font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;margin:6px 0}
+.mute{color:var(--mute)}
+.card{background:var(--panel);border:2px solid #000;box-shadow:4px 4px 0 #000;border-radius:8px;padding:16px;margin:14px 0}
+.card.c{text-align:center}
+.logo{font-weight:800;font-size:clamp(40px,12vw,80px);line-height:1;letter-spacing:-.02em;margin:26px 0 8px}
+.logo span{color:var(--acc);font-family:var(--mono);font-size:.38em;letter-spacing:0;margin-left:6px}
+.code{font-family:var(--mono);font-size:clamp(44px,14vw,88px);font-weight:800;letter-spacing:.12em;color:var(--acc);margin:6px 0}
+.pl{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px}
+.p{flex:0 0 auto;min-width:96px;border:2px solid var(--line);background:var(--panel);border-radius:6px;padding:8px 12px}
+.p small{display:block;color:var(--mute);font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p b{font-family:var(--mono);font-size:22px}
+.p b.neg{color:var(--bad)}
+.p.b{border-color:var(--acc);background:#232a12}
+.p.pop{animation:pop .45s}
+@keyframes pop{30%{transform:scale(1.12)}}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:6px}
+.grid.f{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
+.cat{background:var(--panel2);border:2px solid var(--line);border-radius:6px;padding:6px 3px;min-height:48px;text-align:center;font-weight:800;font-size:clamp(9px,2.5vw,13px);text-transform:uppercase;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;word-break:break-word}
+.cell{position:relative;background:var(--panel);border:2px solid #000;border-radius:6px;color:var(--acc);font-family:var(--mono);font-weight:800;font-size:clamp(15px,4.6vw,28px);padding:clamp(12px,3.5vw,22px) 2px;text-align:center;box-shadow:3px 3px 0 #000;user-select:none}
+.cell.h{cursor:pointer}
+.cell.h:active{transform:translate(3px,3px);box-shadow:none}
+.cell.u{opacity:.16;box-shadow:none}
+.cell.t{font-family:Onest,sans-serif;font-size:15px;color:var(--ink)}
+.cell i{position:absolute;top:3px;right:6px;color:var(--hot);font-style:normal;font-size:11px}
+.q{background:var(--panel);border:2px solid #000;box-shadow:5px 5px 0 #000;border-radius:8px;padding:clamp(16px,4vw,32px);margin:10px 0;animation:in .2s}
+.meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
+.q h2{font-size:clamp(22px,5.4vw,40px);line-height:1.2;margin:14px 0;font-weight:800}
+.mod{display:inline-block;background:var(--hot);color:#0e0f0c;font-weight:800;padding:5px 9px;border-radius:4px;font-size:13px;margin-top:10px}
+.a{display:inline-block;background:var(--ok);color:#06210f;font-weight:800;padding:8px 12px;border-radius:4px;font-size:clamp(16px,4vw,24px)}
+.a.priv{background:transparent;color:var(--ok);border:2px dashed var(--ok)}
+.who{font-family:var(--mono);color:var(--acc);font-size:15px;margin:12px 0 0}
+.dock{position:sticky;bottom:0;background:var(--bg);border-top:2px solid var(--line);padding:8px 0}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.buzz{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:956px;margin:0 auto;font-size:34px;padding:26px 0;z-index:5}
+.win{text-align:center;font-size:clamp(24px,7vw,44px);font-weight:800;color:var(--acc);margin:16px 0}
+.ok{color:var(--ok)}.no{color:var(--bad)}
+.ans{background:var(--panel);border:2px solid var(--line);border-radius:6px;padding:10px 12px;margin:8px 0}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--acc);color:#0e0f0c;font-weight:800;padding:10px 16px;border-radius:6px;border:2px solid #000;box-shadow:3px 3px 0 #000;z-index:20}
+</style></head><body><div class='w' id='app'></div>
 <script>
 const sb=supabase.createClient('https://oqvebfgpvqgfbmygmowj.supabase.co','sb_publishable_JNu0J0xODiiA_7Z879WbtQ_wQGRo8VQ');
-const P=`Космос|Какая планета Солнечной системы ближайшая к Солнцу?~Меркурий|Кто первым в истории вышел в открытый космос?~Алексей Леонов|Как называется самый большой спутник Юпитера?~Ганимед|Как называется граница вокруг чёрной дыры, из-за которой не вырвется даже свет?~Горизонт событий|Как называется самая высокая гора Солнечной системы, она находится на Марсе?~Олимп (Olympus Mons)|С какой галактикой через миллиарды лет столкнётся наш Млечный Путь?~С галактикой Андромеды
-Кино|Как зовут героя Киану Ривза в «Матрице»?~Нео|Кто снял «Начало» и «Интерстеллар»?~Кристофер Нолан|Какой корейский фильм первым получил «Оскар» как лучший фильм?~Паразиты|Какой режиссёр снял «Космическую одиссею 2001 года»?~Стэнли Кубрик|Какой фильм Тарантино получил «Золотую пальмовую ветвь» в Каннах в 1994 году?~Криминальное чтиво|Кто снял фильм «Сталкер» 1979 года?~Андрей Тарковский
-Игры|Как зовут знаменитого водопроводчика Nintendo?~Марио|Какая консоль Sony вышла в Японии в декабре 1994 года?~PlayStation|Какая студия создала Half-Life?~Valve|Какой город уничтожен вирусом в Resident Evil 2?~Раккун-Сити|Какой позывной у героя первой Metal Gear Solid?~Солид Снейк|В какой игре 1996 года впервые появилась Лара Крофт?~Tomb Raider
-Рэп|Кто автор альбома «Горгород»?~Oxxxymiron|Из какого города Kendrick Lamar?~Комптон|Кто основал лейбл Aftermath?~Dr. Dre|Из какого района Нью-Йорка группа Wu-Tang Clan?~Статен-Айленд|Кто выпустил альбом Illmatic?~Nas|Кто выпустил альбом The Blueprint в 2001 году?~Jay-Z
-География|Какая столица у Канады?~Оттава|Какое озеро самое глубокое в мире?~Байкал|Какая самая длинная река Европы?~Волга|Какой пролив разделяет Азию и Северную Америку?~Берингов|Какая страна целиком окружена территорией ЮАР?~Лесото|Какая самая большая пустыня мира, если считать полярные?~Антарктическая
-IT|Что означает аббревиатура HTML?~HyperText Markup Language|Кто создал ядро Linux?~Линус Торвальдс|Как называется система контроля версий, созданная Торвальдсом?~Git|Какой порт по умолчанию у HTTPS?~443|В каком году запущен YouTube?~2005|Кто создал язык JavaScript?~Брендан Айк
-Эмодзи-ребусы|Назови фильм: 🦁👑~Король Лев|Назови фильм: 🕷️🧑~Человек-паук|Назови фильм: 🚢🧊❤️~Титаник|Назови фильм: 🧙‍♂️💍🌋~Властелин колец|Назови мультфильм: 🐀👨‍🍳~Рататуй|Назови сериал: 🧪👨‍🔬🚐~Во все тяжкие
-♪ Музыка|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек~Знает ведущий
-История|Кто был первым императором Рима?~Октавиан Август|В каком году пала Берлинская стена?~1989|Как звали последнего российского императора?~Николай II|В каком году произошла Куликовская битва?~1380|Какой договор 1648 года завершил Тридцатилетнюю войну?~Вестфальский мир|Какой документ 1215 года ограничил власть английского короля?~Великая хартия вольностей
-Литература|Кто автор «Мастера и Маргариты»?~Булгаков|Как зовут главного героя «Преступления и наказания»?~Родион Раскольников|Кто написал «1984»?~Джордж Оруэлл|Какой роман в стихах Пушкин писал более семи лет?~Евгений Онегин|Кто автор «Над пропастью во ржи»?~Сэлинджер|Кто автор «Сто лет одиночества»?~Габриэль Гарсиа Маркес
-Наука|Сколько сердец у осьминога?~Три|Какой газ преобладает в атмосфере Земли?~Азот|Какой химический символ у золота?~Au|Сколько костей у взрослого человека?~206|Какой минерал самый твёрдый по шкале Мооса?~Алмаз|Какую частицу обнаружили на Большом адронном коллайдере в 2012 году?~Бозон Хиггса
-Право|Как называется основной закон государства?~Конституция|Как называется принцип разделения власти на три ветви?~Разделение властей|Кто автор книги «О духе законов»?~Монтескьё|Как называется проверка закона на соответствие конституции?~Конституционный контроль|Как называется презумпция, по которой человек невиновен, пока вина не доказана?~Презумпция невиновности|Как на латыни звучит принцип «договоры должны соблюдаться»?~Pacta sunt servanda
-Еда|Из какой страны пицца?~Италия|Из чего делают тофу?~Из сои|Из какого фрукта делают гуакамоле?~Авокадо|Какая специя считается самой дорогой?~Шафран|Как называется острая зелёная паста к суши?~Васаби|Как называется итальянский десерт с кофе и маскарпоне?~Тирамису
-Спорт|Сколько колец на олимпийском флаге?~5|Где прошла зимняя Олимпиада 2014 года?~Сочи|Кто выиграл чемпионат мира по футболу 2018 года?~Франция|Кто выиграл чемпионат мира по футболу 2022 года?~Аргентина|В каком виде спорта используют волан?~Бадминтон|В каком городе прошла летняя Олимпиада 1980 года?~Москва
-Беларусь|Какая река течёт через Минск?~Свислочь|Какой национальный парк известен зубрами?~Беловежская пуща|Какое самое большое озеро, целиком расположенное в Беларуси?~Нарочь|Какая самая длинная река Беларуси?~Днепр|Как называется самая высокая точка Беларуси?~Гора Дзержинская|Какой замковый комплекс в городе Мир входит в список ЮНЕСКО?~Мирский замок
-Технологии|Кто основал Apple вместе со Стивом Возняком?~Стив Джобс|В каком году вышел первый iPhone?~2007|Какая компания создала ChatGPT?~OpenAI|Какая компания выпускает процессоры Ryzen?~AMD|Как расшифровывается CPU?~Центральный процессор|Как называется проект Тима Бернерса-Ли, созданный в ЦЕРН?~World Wide Web`.split('\n').map(l=>{const a=l.split('|');return{n:a[0],q:a.slice(1).map(x=>{const t=x.split('~');return{q:t[0],a:t[1]}})}});
+const P=`
+Космос|Какая планета Солнечной системы ближайшая к Солнцу?~Меркурий|Кто первым в истории вышел в открытый космос?~Алексей Леонов|Как называется самый большой спутник Юпитера?~Ганимед|Как называется граница вокруг чёрной дыры, из-за которой не вырвется даже свет?~Горизонт событий|Как называется самая высокая гора Солнечной системы, она находится на Марсе?~Олимп (Olympus Mons)|С какой галактикой через миллиарды лет столкнётся наш Млечный Путь?~С галактикой Андромеды#
+Кино|Как зовут героя Киану Ривза в «Матрице»?~Нео|Кто снял «Начало» и «Интерстеллар»?~Кристофер Нолан|Какой корейский фильм первым получил «Оскар» как лучший фильм?~Паразиты|Какой режиссёр снял «Космическую одиссею 2001 года»?~Стэнли Кубрик|Какой фильм Тарантино получил «Золотую пальмовую ветвь» в Каннах в 1994 году?~Криминальное чтиво|Кто снял фильм «Сталкер» 1979 года?~Андрей Тарковский#
+Игры|Как зовут знаменитого водопроводчика Nintendo?~Марио|Какая консоль Sony вышла в Японии в декабре 1994 года?~PlayStation|Какая студия создала Half-Life?~Valve|Какой город уничтожен вирусом в Resident Evil 2?~Раккун-Сити|Какой позывной у героя первой Metal Gear Solid?~Солид Снейк|В какой игре 1996 года впервые появилась Лара Крофт?~Tomb Raider#
+Рэп|Кто автор альбома «Горгород»?~Oxxxymiron|Из какого города Kendrick Lamar?~Комптон|Кто основал лейбл Aftermath?~Dr. Dre|Из какого района Нью-Йорка группа Wu-Tang Clan?~Статен-Айленд|Кто выпустил альбом Illmatic?~Nas|Кто выпустил альбом The Blueprint в 2001 году?~Jay-Z#
+География|Какая столица у Канады?~Оттава|Какое озеро самое глубокое в мире?~Байкал|Какая самая длинная река Европы?~Волга|Какой пролив разделяет Азию и Северную Америку?~Берингов|Какая страна целиком окружена территорией ЮАР?~Лесото|Какая самая большая пустыня мира, если считать полярные?~Антарктическая#
+IT|Что означает аббревиатура HTML?~HyperText Markup Language|Кто создал ядро Linux?~Линус Торвальдс|Как называется система контроля версий, созданная Торвальдсом?~Git|Какой порт по умолчанию у HTTPS?~443|В каком году запущен YouTube?~2005|Кто создал язык JavaScript?~Брендан Айк#
+Эмодзи-ребусы|Назови фильм: 🦁👑~Король Лев|Назови фильм: 🕷️🧑~Человек-паук|Назови фильм: 🚢🧊❤️~Титаник|Назови фильм: 🧙‍♂️💍🌋~Властелин колец|Назови мультфильм: 🐀👨‍🍳~Рататуй|Назови сериал: 🧪👨‍🔬🚐~Во все тяжкие#
+♪ Музыка|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек~Знает ведущий#
+История|Кто был первым императором Рима?~Октавиан Август|В каком году пала Берлинская стена?~1989|Как звали последнего российского императора?~Николай II|В каком году произошла Куликовская битва?~1380|Какой договор 1648 года завершил Тридцатилетнюю войну?~Вестфальский мир|Какой документ 1215 года ограничил власть английского короля?~Великая хартия вольностей#
+Литература|Кто автор «Мастера и Маргариты»?~Булгаков|Как зовут главного героя «Преступления и наказания»?~Родион Раскольников|Кто написал «1984»?~Джордж Оруэлл|Какой роман в стихах Пушкин писал более семи лет?~Евгений Онегин|Кто автор «Над пропастью во ржи»?~Сэлинджер|Кто автор «Сто лет одиночества»?~Габриэль Гарсиа Маркес#
+Наука|Сколько сердец у осьминога?~Три|Какой газ преобладает в атмосфере Земли?~Азот|Какой химический символ у золота?~Au|Сколько костей у взрослого человека?~206|Какой минерал самый твёрдый по шкале Мооса?~Алмаз|Какую частицу обнаружили на Большом адронном коллайдере в 2012 году?~Бозон Хиггса#
+Право|Как называется основной закон государства?~Конституция|Как называется принцип разделения власти на три ветви?~Разделение властей|Кто автор книги «О духе законов»?~Монтескьё|Как называется проверка закона на соответствие конституции?~Конституционный контроль|Как называется презумпция, по которой человек невиновен, пока вина не доказана?~Презумпция невиновности|Как на латыни звучит принцип «договоры должны соблюдаться»?~Pacta sunt servanda#
+Еда|Из какой страны пицца?~Италия|Из чего делают тофу?~Из сои|Из какого фрукта делают гуакамоле?~Авокадо|Какая специя считается самой дорогой?~Шафран|Как называется острая зелёная паста к суши?~Васаби|Как называется итальянский десерт с кофе и маскарпоне?~Тирамису#
+Спорт|Сколько колец на олимпийском флаге?~5|Где прошла зимняя Олимпиада 2014 года?~Сочи|Кто выиграл чемпионат мира по футболу 2018 года?~Франция|Кто выиграл чемпионат мира по футболу 2022 года?~Аргентина|В каком виде спорта используют волан?~Бадминтон|В каком городе прошла летняя Олимпиада 1980 года?~Москва#
+Беларусь|Какая река течёт через Минск?~Свислочь|Какой национальный парк известен зубрами?~Беловежская пуща|Какое самое большое озеро, целиком расположенное в Беларуси?~Нарочь|Какая самая длинная река Беларуси?~Днепр|Как называется самая высокая точка Беларуси?~Гора Дзержинская|Какой замковый комплекс в городе Мир входит в список ЮНЕСКО?~Мирский замок#
+Технологии|Кто основал Apple вместе со Стивом Возняком?~Стив Джобс|В каком году вышел первый iPhone?~2007|Какая компания создала ChatGPT?~OpenAI|Какая компания выпускает процессоры Ryzen?~AMD|Как расшифровывается CPU?~Центральный процессор|Как называется проект Тима Бернерса-Ли, созданный в ЦЕРН?~World Wide Web#
+Животные|Какое животное самое большое на Земле?~Синий кит|Сколько ног у паука?~Восемь|Как называется детёныш кенгуру?~Джоуи|Какое млекопитающее умеет по-настоящему летать?~Летучая мышь|Какая нелетающая птица из Новой Зеландии стала символом страны?~Киви|Какое наземное животное вынашивает детёныша до 22 месяцев?~Слон#
+Музыка: факты|Сколько основных нот в октаве?~Семь|Кто был вокалистом группы Queen?~Фредди Меркьюри|Какая группа выпустила альбом The Dark Side of the Moon?~Pink Floyd|Как называется очень тихая динамика, обозначаемая буквой p?~Пиано|Какой композитор продолжал писать музыку, несмотря на глухоту?~Бетховен|Какой инструмент изобрёл Бартоломео Кристофори около 1700 года?~Фортепиано#
+Русский язык|Сколько букв в русском алфавите?~33|Какая часть речи отвечает на вопрос «что делать?»~Глагол|Как называется слово с противоположным значением?~Антоним|Как правильно: «ложить» или «класть»?~Класть|Как называется устойчивое выражение вроде «бить баклуши»?~Фразеологизм|Как называется слово, которое читается одинаково слева направо и справа налево?~Палиндром#
+Мифология|Как звали верховного бога греков?~Зевс|Как называется молот Тора?~Мьёльнир|Как звали трёхглавого пса, охранявшего вход в Аид?~Цербер|Кто в греческой мифологии принёс людям огонь?~Прометей|Как называется мировое древо в скандинавской мифологии?~Иггдрасиль|Как звали египетского бога с головой шакала, связанного с мумификацией?~Анубис#
+Техника и транспорт|Как называется первый в мире искусственный спутник Земли?~Спутник-1|В каком году братья Райт совершили первый полёт?~1903|Какая компания выпускает электромобили Model S?~Tesla|Как называются японские скоростные поезда?~Синкансэн|Как назывался англо-французский сверхзвуковой пассажирский самолёт?~Конкорд|Как назывался первый массовый автомобиль Генри Форда, выпускавшийся с 1908 года?~Ford Model T#
+Тело человека|Какой самый большой орган человека?~Кожа|Сколько камер в сердце человека?~Четыре|Какая самая большая кость человека?~Бедренная|Какой витамин вырабатывается в коже под действием солнца?~Витамин D|Какой орган вырабатывает инсулин?~Поджелудочная железа|Как называется самая маленькая кость человека, она находится в ухе?~Стремя#
+Аниме|Как зовут главного героя «Наруто»?~Наруто Удзумаки|Какая студия сделала «Унесённых призраками»?~Studio Ghibli|Как зовут кота-робота из будущего?~Дораэмон|Как зовут героя «Тетради смерти», нашедшего блокнот?~Лайт Ягами|Кто режиссёр «Унесённых призраками»?~Хаяо Миядзаки|Как называется аниме 1988 года Кацухиро Отомо про Нео-Токио?~Акира#
+Деньги|Как называется денежная единица Японии?~Иена|Какая валюта у Великобритании?~Фунт стерлингов|Как называется рост общего уровня цен?~Инфляция|Какая криптовалюта появилась первой?~Биткоин|Как называется индекс 500 крупнейших компаний США?~S&P 500|Под каким псевдонимом скрывается создатель Биткоина?~Сатоши Накамото#
+Живопись|Кто написал «Мону Лизу»?~Леонардо да Винчи|Кто написал «Звёздную ночь»?~Винсент Ван Гог|В каком городе находится Эрмитаж?~Санкт-Петербург|Кто автор «Чёрного квадрата»?~Казимир Малевич|Кто автор картины «Постоянство памяти» с тающими часами?~Сальвадор Дали|Кто написал «Гернику»?~Пабло Пикассо#
+Города мира|В каком городе находится Колизей?~Рим|В каком городе находится Статуя Свободы?~Нью-Йорк|В каком городе находится Саграда Фамилия?~Барселона|Какой самый населённый город Японии?~Токио|Какая столица у Турции?~Анкара|Какой город был столицей Российской империи до 1918 года?~Санкт-Петербург#
+Химия|Какая химическая формула у воды?~H2O|Какой газ выдыхают люди?~Углекислый газ|Какой элемент самый лёгкий?~Водород|Какой металл жидкий при комнатной температуре?~Ртуть|Какой химический символ у натрия?~Na|Сколько химических элементов в современной таблице Менделеева?~118#
+Напитки и сыры|Из чего делают сыр?~Из молока|Из каких бобов делают шоколад?~Какао|Как называется японский чай в виде порошка?~Матча|Как называется индийский чай с молоком и специями?~Масала-чай|Какая страна считается родиной кофе?~Эфиопия|Как называется итальянский твёрдый сыр, которого называют «королём сыров»?~Пармезан#
+Сериалы|Как называется сериал про Вестерос и борьбу за Железный трон?~Игра престолов|Как зовут доктора, друга Шерлока Холмса?~Ватсон|Какой сериал Netflix рассказывает о детях из города Хокинс?~Очень странные дела|Как называется мультсериал про учёного и его внука?~Рик и Морти|Как называется сериал про банду Шелби в Бирмингеме?~Острые козырьки|Как называется сериал про выживших в авиакатастрофе на загадочном острове?~Остаться в живых (Lost)#
+Россия и СССР|Кто первым полетел в космос?~Юрий Гагарин|Какой город был столицей СССР?~Москва|В каком году распался СССР?~1991|Как называлась советская космическая станция, затопленная в 2001 году?~Мир|Кто был последним руководителем СССР?~Михаил Горбачёв|Как называлась первая в мире атомная электростанция, запущенная в 1954 году?~Обнинская АЭС#
+Языки|На каком языке говорят в Бразилии?~Португальский|Как по-английски «спасибо»?~Thank you|Как по-французски «привет»?~Bonjour|Какой язык государственный в Австрии?~Немецкий|Какой язык самый распространённый по числу носителей?~Китайский (путунхуа)|Как называется международный язык, созданный Заменгофом в 1887 году?~Эсперанто
+`.split('#').map(l=>l.trim()).filter(Boolean).map(l=>{const a=l.split('|');return{n:a[0],q:a.slice(1).map(x=>{const t=x.split('~');return{q:t[0].trim(),a:t[1].trim()}})}});
 const MODS={secret:'🎁 Вопрос с секретом: ведущий отдаёт его одному игроку',swap:'🔄 Обмен: победитель может поменяться баллами с любым игроком',x2:'✖2 Двойные баллы за этот вопрос',stake:'🎲 Ставка: игрок сам называет ставку'};
 const g=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const esc=s=>String(s).replace(/[&<>']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;'}[c]));
 const sh=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const myId=sessionStorage.id||(sessionStorage.id='u'+Math.random().toString(36).slice(2,9));
-let ch,isHost=false,X=null,V=null,S=null,code='',err='',myName='';
+const QR=new URLSearchParams(location.search).get('r')||'';
+let ch,isHost=false,X=null,V=null,S=null,code='',err='',myName='',LAST='',PV=null,muted=localStorage.muted==='1',AC=null;
 const gp=id=>X.players.find(p=>p.id===id);
 const nm=id=>{const p=S.players.find(x=>x.id===id);return p?esc(p.name):'?'};
+function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,t,d,type,v){const a=ac();if(!a||muted)return;const o=a.createOscillator(),k=a.createGain(),s=a.currentTime+t;o.type=type;o.frequency.value=f;k.gain.setValueAtTime(0.0001,s);k.gain.linearRampToValueAtTime(v,s+.01);k.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(k);k.connect(a.destination);o.start(s);o.stop(s+d+.03)}
+const SND={ok(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.08,.2,'triangle',.14))},bad(){tone(196,0,.28,'sawtooth',.1);tone(147,.16,.4,'sawtooth',.1)},buzz(){tone(880,0,.08,'square',.07);tone(1175,.07,.14,'square',.07)},pick(){tone(440,0,.07,'square',.05);tone(660,.06,.09,'square',.05)},final(){[392,494,587,784,988].forEach((f,i)=>tone(f,i*.12,.32,'triangle',.14))}};
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1800)}
 function pub(h){const o={hostName:X.hostName,players:X.players,phase:X.phase,round:X.round,used:X.used,cur:null,fin:null,cats:null,vals:null,mods:null};
  if(X.phase==='board'){const b=X.boards[X.round];o.cats=b.cats.map(c=>c.n);o.vals=b.cats[0].qs.map(q=>q.v);if(h)o.mods=b.mods;
   if(X.cur){const c=X.cur,q=b.cats[c.c].qs[c.i];o.cur={c:c.c,i:c.i,cat:b.cats[c.c].n,v:q.v,q:q.q,mod:c.mod,only:c.only,buzzer:c.buzzer,tried:c.tried,reveal:c.reveal,stage:c.stage,stake:c.stake,url:c.url,winner:c.winner};if(h||c.reveal)o.cur.a=q.a}}
@@ -42,19 +119,22 @@ function join(host,c,name){code=c.toUpperCase();isHost=host;myName=(name||'').tr
  ch.on('broadcast',{event:'state'},m=>{if(!isHost){V=m.payload;render()}});
  if(host){X={host:myId,hostName:myName,players:[],phase:'lobby',round:0,used:[],cur:null,boards:null,fin:null,f:null};
   ch.on('broadcast',{event:'hello'},m=>{const p=m.payload;if(!gp(p.id))X.players.push({id:p.id,name:p.name,score:0});push()})
-  .on('broadcast',{event:'buzz'},m=>{const c=X.cur,id=m.payload.id;if(c&&!c.buzzer&&!c.stage&&!c.only&&!c.tried.includes(id)&&gp(id)){c.buzzer=id;push()}})
+  .on('broadcast',{event:'buzz'},m=>{const c=X.cur,id=m.payload.id;if(c&&!c.buzzer&&!c.stage&&!c.only&&!c.reveal&&!c.tried.includes(id)&&gp(id)){c.buzzer=id;push()}})
   .on('broadcast',{event:'bet'},m=>{const f=X.f,id=m.payload.id;if(f&&f.stage==='bet'&&f.order.includes(id)){f.bets[id]=Math.max(1,Math.min(gp(id).score,Math.floor(+m.payload.v)||1));push()}})
   .on('broadcast',{event:'ans'},m=>{const f=X.f,id=m.payload.id;if(f&&f.stage==='answer'&&f.order.includes(id)){f.ans[id]=String(m.payload.t).slice(0,100);push()}})}
  ch.subscribe(s=>{if(s==='SUBSCRIBED'){if(!host)ch.send({type:'broadcast',event:'hello',payload:{id:myId,name:myName}});render()}});render()}
 function embed(u){if(!u)return'';let s='';try{const x=new URL(u);if(x.hostname.indexOf('soundcloud.com')>-1)s='https://w.soundcloud.com/player/?auto_play=true&url='+encodeURIComponent(u);else if(x.hostname==='youtu.be')s='https://www.youtube.com/embed/'+x.pathname.slice(1)+'?autoplay=1';else if(x.hostname.indexOf('youtube.com')>-1)s='https://www.youtube.com/embed/'+x.searchParams.get('v')+'?autoplay=1'}catch(e){}
- return s?`<iframe src='${s}' width='100%' height='166' allow='autoplay' style='border:0;border-radius:10px;margin-top:10px'></iframe>`:'<p>Не понял ссылку</p>'}
+ return s?`<iframe src='${s}' width='100%' height='166' allow='autoplay' style='border:0;border-radius:6px;margin-top:10px'></iframe>`:'<p class="mute">Не понял ссылку</p>'}
 function after(c){const music=X.boards[X.round].cats[c.c].n[0]==='♪';if(music&&!c.urlDone)c.stage='url';else if(c.mod==='secret'&&!c.only)c.stage='assign';else c.stage=null}
 const ACT={
  mk(){join(true,Math.random().toString(36).slice(2,6).toUpperCase(),g('n').value)},
- jn(){const c=g('c').value.trim();if(!c){err='Введи код';return render()}join(false,c,g('n').value)},
+ jn(){const c=g('c').value.trim();if(!c){err='Введи код комнаты';return render()}join(false,c,g('n').value)},
+ mute(){muted=!muted;localStorage.muted=muted?'1':'0';render()},
+ copy(){const l=location.origin+location.pathname+'?r='+code;(navigator.clipboard?navigator.clipboard.writeText(l):Promise.reject()).then(()=>toast('Ссылка скопирована'),()=>toast(l))},
  start(){const s=sh(P),fin=s.slice(10).filter(c=>c.n[0]!=='♪').slice(0,5);
   X.boards=[0,1].map(r=>{const cats=s.slice(r*5,r*5+5).map(c=>({n:c.n,qs:c.q.slice(0,5).map((x,i)=>({v:(i+1)*100*(r+1),q:x.q,a:x.a}))}));const keys=[];for(let c=0;c<5;c++)for(let i=1;i<5;i++)keys.push(c+'-'+i);const t=sh(['secret','swap','x2','stake']),mods={};sh(keys).slice(0,4).forEach((k,j)=>mods[k]=t[j]);return{cats,mods}});
-  X.fin=fin.map(c=>({n:c.n,q:c.q[5].q,a:c.q[5].a}));X.phase='board';X.round=0;X.used=[];push()},
+  X.fin=fin.map(c=>({n:c.n,q:c.q[5].q,a:c.q[5].a}));X.phase='board';X.round=0;X.used=[];X.cur=null;push()},
+ again(){X.players.forEach(p=>p.score=0);X.phase='lobby';X.round=0;X.used=[];X.cur=null;X.f=null;push()},
  pick(v){if(X.cur)return;const k=v.split('-'),c=+k[0],i=+k[1],key=X.round+'-'+v;if(X.used.includes(key))return;X.used.push(key);
   const cur={c,i,buzzer:null,tried:[],reveal:false,mod:X.boards[X.round].mods[v],stage:null};X.cur=cur;after(cur);push()},
  seturl(){const c=X.cur;c.url=g('u').value.trim();c.urlDone=true;after(c);push()},
@@ -62,17 +142,17 @@ const ACT={
  assign(id){const c=X.cur;c.only=id;c.buzzer=id;after(c);push()},
  setstake(){const c=X.cur;c.stake=Math.max(1,Math.floor(+g('sk').value)||1);push()},
  yes(){ACT.judge(true)},no(){ACT.judge(false)},
- judge(ok){const c=X.cur,q=X.boards[X.round].cats[c.c].qs[c.i],v=c.stake||q.v*(c.mod==='x2'?2:1),p=gp(c.buzzer);
+ judge(ok){const c=X.cur;if(!c||!c.buzzer)return;const q=X.boards[X.round].cats[c.c].qs[c.i],v=c.stake||q.v*(c.mod==='x2'?2:1),p=gp(c.buzzer);
   if(ok){p.score+=v;if(c.mod==='swap'&&X.players.length>1){c.stage='swap';c.winner=p.id;return push()}X.cur=null}
   else{p.score-=v;c.tried.push(c.buzzer);c.buzzer=null;c.stake=undefined;if(c.only)X.cur=null}push()},
  swap(id){const c=X.cur;if(id){const a=gp(c.winner),b=gp(id);const t=a.score;a.score=b.score;b.score=t}X.cur=null;push()},
  noswap(){X.cur=null;push()},
- skip(){const c=X.cur;c.reveal=true;c.stage=null;c.buzzer=null;push();setTimeout(()=>{X.cur=null;push()},3000)},
+ skip(){const c=X.cur;if(!c||c.reveal)return;c.reveal=true;c.stage=null;c.buzzer=null;push();setTimeout(()=>{if(X.cur===c){X.cur=null;push()}},3500)},
  buzz(){ch.send({type:'broadcast',event:'buzz',payload:{id:myId}})},
  nxt(){if(X.cur)return;if(X.round===0){X.round=1;push();return}
   const order=X.players.filter(p=>p.score>0).sort((a,b)=>a.score-b.score).map(p=>p.id);
   X.phase='final';X.f={stage:'strike',struck:[],t:0,order,bets:{},ans:{},res:{}};push()},
- strike(v){const f=X.f;const i=+v;if(f.stage!=='strike'||f.struck.includes(i))return;f.struck.push(i);f.t++;if(f.struck.length>=4)f.stage='bet';push()},
+ strike(v){const f=X.f,i=+v;if(f.stage!=='strike'||f.struck.includes(i))return;f.struck.push(i);f.t++;if(f.struck.length>=4)f.stage='bet';push()},
  bet(){ch.send({type:'broadcast',event:'bet',payload:{id:myId,v:g('bt').value}})},
  showq(){X.f.stage='answer';push()},
  sendans(){ch.send({type:'broadcast',event:'ans',payload:{id:myId,t:g('an').value}})},
@@ -80,54 +160,68 @@ const ACT={
  mark(v){const k=v.split(':'),id=k[0],ok=k[1]==='1',f=X.f;f.res[id]=ok;
   if(f.order.every(i=>i in f.res)){f.order.forEach(i=>{const p=gp(i);p.score+=f.res[i]?(f.bets[i]||1):-(f.bets[i]||1)});f.stage='done'}push()}
 };
-document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const f=ACT[t.dataset.a];if(f)f(t.dataset.v)});
+document.addEventListener('click',e=>{ac();const t=e.target.closest('[data-a]');if(!t)return;const f=ACT[t.dataset.a];if(f)f(t.dataset.v)});
 function hostCur(c){let h='';
  if(c.stage==='url')h+=`<input id='u' placeholder='Ссылка SoundCloud или YouTube'><button data-a='seturl'>Запустить трек</button><button class='s' data-a='nourl'>Без трека</button>`;
  else if(c.stage==='assign')S.players.forEach(p=>h+=`<button class='s' data-a='assign' data-v='${p.id}'>Отдать: ${esc(p.name)}</button>`);
  else if(c.stage==='swap'){S.players.filter(p=>p.id!==c.winner).forEach(p=>h+=`<button class='s' data-a='swap' data-v='${p.id}'>Поменяться с: ${esc(p.name)}</button>`);h+=`<button data-a='noswap'>Не меняться</button>`}
- else{if(c.mod==='stake'&&c.buzzer&&!c.stake)h+=`<input id='sk' type='number' placeholder='Ставка игрока'><button data-a='setstake'>Принять ставку</button>`;
+ else if(c.reveal)h+=`<p class='mute'>Показываем ответ…</p>`;
+ else{if(c.mod==='stake'&&c.buzzer&&!c.stake)h+=`<input id='sk' type='number' inputmode='numeric' placeholder='Ставка игрока'><button data-a='setstake'>Принять ставку</button>`;
   else if(c.buzzer)h+=`<div class='row'><button class='g' data-a='yes'>Верно</button><button class='r' data-a='no'>Неверно</button></div>`;
   h+=`<button class='s' data-a='skip'>Никто не ответил</button>`}
  return h}
-function boardHtml(){const c=S.cur;let h='<div>Раунд '+(S.round+1)+' из 2, потом финал</div>';
- if(c){h+='<div class="q">';if(c.mod)h+='<div class="mod">'+MODS[c.mod]+'</div>';h+='<div>'+esc(c.cat)+' · '+c.v+'</div><h2>'+esc(c.q)+'</h2>';
-  if(c.url)h+=embed(c.url);if(c.a)h+='<div class="a">Ответ: '+esc(c.a)+'</div>';
-  if(c.buzzer)h+='<h3>Отвечает: '+nm(c.buzzer)+(c.stake?' (ставка '+c.stake+')':'')+'</h3>';
-  h+='</div><div style="margin-top:10px">';
-  if(isHost)h+=hostCur(c);else if(!c.stage&&!c.buzzer&&!c.only&&!c.tried.includes(myId))h+=`<button style='font-size:30px;padding:26px' data-a='buzz'>Я!</button>`;
-  return h+'</div>'}
- h+='<div class="grid">';S.cats.forEach(n=>h+='<div class="cat">'+esc(n)+'</div>');
- for(let i=0;i<5;i++)S.cats.forEach((n,ci)=>{const u=S.used.includes(S.round+'-'+ci+'-'+i),m=isHost&&S.mods&&S.mods[ci+'-'+i]&&!u?'*':'';h+=`<div class='cell ${u?'u':''}' ${isHost&&!u?`data-a='pick' data-v='${ci}-${i}'`:''}>${S.vals[i]}${m}</div>`});
+function players(){if(!S.players.length)return'';return `<div class='pl'>`+S.players.map(p=>`<div class='p${S.cur&&S.cur.buzzer===p.id?' b':''}${PV&&PV.sc[p.id]!==undefined&&PV.sc[p.id]!==p.score?' pop':''}'><small>${esc(p.name)}${p.id===myId?' (ты)':''}</small><b class='${p.score<0?'neg':''}'>${p.score}</b></div>`).join('')+`</div>`}
+function lobby(){return isHost?`<div class='card c'><div class='lab'>код комнаты</div><div class='code'>${code}</div><button class='s' data-a='copy'>Скопировать ссылку для друзей</button></div><div class='card'><div class='lab'>Игроков: ${S.players.length}</div>${S.players.map(p=>`<div>• ${esc(p.name)}</div>`).join('')||`<p class='mute'>Пока никого. Кинь друзьям ссылку.</p>`}</div><button data-a='start'>Начать игру</button>`:`<div class='card c'><div class='lab'>ты в комнате</div><div class='code'>${code}</div><p class='mute'>Ждём, пока ведущий начнёт. Игроков: ${S.players.length}</p></div>`}
+function boardHtml(){const c=S.cur;let h='';
+ if(!c){h+=`<div class='lab'>Раунд ${S.round+1} из 2, потом финал</div><div class='grid'>`+S.cats.map(n=>`<div class='cat'>${esc(n)}</div>`).join('');
+  for(let i=0;i<5;i++)S.cats.forEach((n,ci)=>{const u=S.used.includes(S.round+'-'+ci+'-'+i),m=isHost&&S.mods&&S.mods[ci+'-'+i]&&!u;h+=`<div class='cell${u?' u':''}${isHost&&!u?' h':''}' ${isHost&&!u?`data-a='pick' data-v='${ci}-${i}'`:''}>${S.vals[i]}${m?'<i>●</i>':''}</div>`});
+  h+='</div>';
+  h+=isHost?`<p class='mute'>Жми на клетку. Оранжевая точка: модификатор, её видишь только ты.</p><button class='s' data-a='nxt'>${S.round===0?'К раунду 2':'К финалу'}</button>`:`<p class='mute'>Ведущий выбирает вопрос…</p>`;
+  return h}
+ h+=`<div class='q'><div class='meta'><span>${esc(c.cat)}</span><span>${c.v}</span></div>`;
+ if(c.mod)h+=`<div class='mod'>${MODS[c.mod]}</div>`;
+ h+=`<h2>${esc(c.q)}</h2>`;
+ if(c.url)h+=embed(c.url);
+ if(c.a)h+=`<div class='a${c.reveal?'':' priv'}'>${c.reveal?'Ответ':'Ответ (видишь только ты)'}: ${esc(c.a)}</div>`;
+ if(c.buzzer)h+=`<p class='who'>отвечает: ${nm(c.buzzer)}${c.stake?' · ставка '+c.stake:''}</p>`;
  h+='</div>';
- if(isHost)h+=`<p>Жми на клетку (звёздочка видна только тебе: там модификатор).</p><button class='s' data-a='nxt'>${S.round===0?'К раунду 2':'К финалу'}</button>`;else h+='<p>Ведущий выбирает вопрос…</p>';
+ if(isHost)h+=`<div class='dock'>${hostCur(c)}</div>`;
+ else if(c.tried.includes(myId))h+=`<p class='mute'>Ты уже отвечал на этот вопрос.</p>`;
+ else if(!c.stage&&!c.buzzer&&!c.only&&!c.reveal)h+=`<button class='buzz' data-a='buzz'>Я!</button>`;
  return h}
-function finalHtml(){const f=S.fin;let h='<h2>ФИНАЛ</h2>';
- if(!f.order.length)return h+'<p>Ни у кого нет баллов для финала.</p>';
- h+='<p>В финале: '+f.order.map(nm).join(', ')+'</p>';
- if(f.stage==='strike'){h+='<p>Вычёркивает тему: <b>'+nm(f.turn)+'</b></p><div class="grid">';
-  f.cats.forEach((n,i)=>{const s=f.struck.includes(i);h+=`<div class='cell ${s?'u':''}' style='font-size:15px' ${isHost&&!s?`data-a='strike' data-v='${i}'`:''}>${esc(n)}</div>`});h+='</div>';if(isHost)h+='<p>Жми на тему, которую называет игрок.</p>';return h}
- h+='<div class="q"><div>Тема финала</div><h2>'+esc(f.cats[f.rem])+'</h2>';
- if(f.fq)h+='<div style="font-size:22px">'+esc(f.fq)+'</div>';
- if(f.fa)h+='<div class="a">Ответ: '+esc(f.fa)+'</div>';h+='</div>';
+function finalHtml(){const f=S.fin;let h=`<div class='lab'>финал</div>`;
+ if(!f.order.length)return h+`<div class='card'>Ни у кого нет баллов для финала.</div>`+(isHost?`<button data-a='again'>Играть заново</button>`:'');
+ h+=`<p class='mute'>В финале: ${f.order.map(nm).join(', ')}</p>`;
+ if(f.stage==='strike'){h+=`<p>Вычёркивает тему: <b>${nm(f.turn)}</b></p><div class='grid f'>`;
+  f.cats.forEach((n,i)=>{const s=f.struck.includes(i);h+=`<div class='cell t${s?' u':''}${isHost&&!s?' h':''}' ${isHost&&!s?`data-a='strike' data-v='${i}'`:''}>${esc(n)}</div>`});h+='</div>';if(isHost)h+=`<p class='mute'>Жми на тему, которую называет игрок.</p>`;return h}
+ h+=`<div class='q'><div class='meta'><span>тема финала</span></div><h2>${esc(f.cats[f.rem])}</h2>`;
+ if(f.fq)h+=`<div style='font-size:clamp(18px,4.5vw,28px)'>${esc(f.fq)}</div>`;
+ if(f.fa)h+=`<p><span class='a'>Ответ: ${esc(f.fa)}</span></p>`;h+='</div>';
  const mine=f.order.includes(myId);
- if(f.stage==='bet'){h+='<h3>Ставки</h3>';f.order.forEach(id=>h+='<div>'+nm(id)+': '+(f.bets[id]?(isHost?f.bets[id]:'готово ✔'):'думает…')+'</div>');
-  if(mine&&!f.bets[myId])h+=`<input id='bt' type='number' placeholder='Твоя ставка (до всех твоих баллов)'><button data-a='bet'>Поставить</button>`;
+ if(f.stage==='bet'){h+=`<div class='lab'>ставки</div>`;f.order.forEach(id=>h+=`<div class='ans'>${nm(id)}: ${f.bets[id]?(isHost?f.bets[id]:'готово ✔'):'думает…'}</div>`);
+  if(mine&&!f.bets[myId])h+=`<input id='bt' type='number' inputmode='numeric' placeholder='Твоя ставка (до всех твоих баллов)'><button data-a='bet'>Поставить</button>`;
   if(isHost)h+=`<button data-a='showq'>Показать вопрос</button>`}
- else if(f.stage==='answer'){h+='<h3>Пишите ответы</h3>';f.order.forEach(id=>h+='<div>'+nm(id)+': '+(f.ans[id]?'ответил ✔':'пишет…')+'</div>');
+ else if(f.stage==='answer'){h+=`<div class='lab'>пишите ответы</div>`;f.order.forEach(id=>h+=`<div class='ans'>${nm(id)}: ${f.ans[id]?'ответил ✔':'пишет…'}</div>`);
   if(mine&&!f.ans[myId])h+=`<input id='an' placeholder='Твой ответ'><button data-a='sendans'>Отправить</button>`;
   if(isHost)h+=`<button data-a='reveal'>Показать ответы</button>`}
- else{h+='<h3>Ответы</h3>';f.order.forEach(id=>{const r=f.res[id];h+='<div style="margin:8px 0">'+nm(id)+': <b>'+esc(f.ans[id]||'—')+'</b> (ставка '+f.bets[id]+') '+(r===undefined?'':r?'<span class="ok">верно</span>':'<span class="no">неверно</span>');
+ else{h+=`<div class='lab'>ответы</div>`;f.order.forEach(id=>{const r=f.res[id];h+=`<div class='ans'>${nm(id)}: <b>${esc(f.ans[id]||'—')}</b> (ставка ${f.bets[id]}) ${r===undefined?'':r?`<span class='ok'>верно</span>`:`<span class='no'>неверно</span>`}`;
    if(isHost&&r===undefined)h+=`<div class='row'><button class='g' data-a='mark' data-v='${id}:1'>Верно</button><button class='r' data-a='mark' data-v='${id}:0'>Неверно</button></div>`;h+='</div>'});
-  if(f.stage==='done'){const w=[...S.players].sort((a,b)=>b.score-a.score)[0];h+='<h2>Победитель: '+esc(w.name)+' 🏆 ('+w.score+')</h2>'}}
+  if(f.stage==='done'){const w=[...S.players].sort((a,b)=>b.score-a.score)[0];h+=`<div class='win'>🏆 ${esc(w.name)}: ${w.score}</div>`+(isHost?`<button data-a='again'>Играть заново</button>`:'')}}
  return h}
-function render(){const a=g('app');
- if(!code){a.innerHTML=`<h1>Свояк онлайн</h1><input id='n' placeholder='Твоё имя'><button data-a='mk'>Создать комнату (я ведущий)</button><h3>Или войти</h3><input id='c' placeholder='Код комнаты'><button class='s' data-a='jn'>Войти</button><p style='color:#ff8'>${err}</p>`;return}
+function home(){return `<div class='logo'>СВОЯК<span>//онлайн</span></div><p class='mute'>Своя игра для компании. Ведущий читает вопросы, остальные жмут «Я!».</p><div class='card'><div class='lab'>твоё имя</div><input id='n' maxlength='20' placeholder='Как тебя звать'><button data-a='mk'>Создать комнату: я ведущий</button></div><div class='card'><div class='lab'>код комнаты</div><input id='c' maxlength='8' value='${esc(QR)}' placeholder='ABCD'><button class='s' data-a='jn'>Войти как игрок</button></div><p style='color:var(--bad)'>${esc(err)}</p>`}
+function sounds(){const k=S.cur?S.round+'-'+S.cur.c+'-'+S.cur.i:null;
+ if(PV){if(k&&k!==PV.k)SND.pick();if(S.cur&&S.cur.buzzer&&S.cur.buzzer!==PV.b)SND.buzz();
+  let up=false,dn=false;S.players.forEach(p=>{const o=PV.sc[p.id];if(o!==undefined){if(p.score>o)up=true;if(p.score<o)dn=true}});
+  if(up)SND.ok();else if(dn)SND.bad();
+  if((S.fin&&S.fin.stage==='done'&&PV.st!=='done')||(S.phase==='final'&&PV.ph!=='final'))SND.final()}
+ PV={k,b:S.cur?S.cur.buzzer:null,sc:Object.fromEntries(S.players.map(p=>[p.id,p.score])),st:S.fin?S.fin.stage:null,ph:S.phase}}
+function paint(h){if(h===LAST)return;LAST=h;const a=g('app'),keep={};a.querySelectorAll('input').forEach(i=>keep[i.id]=i.value);const fid=document.activeElement&&document.activeElement.id;a.innerHTML=h;a.querySelectorAll('input').forEach(i=>{if(keep[i.id]!==undefined&&keep[i.id]!=='')i.value=keep[i.id]});if(fid&&g(fid))g(fid).focus()}
+function render(){
+ if(!code){paint(home());return}
  S=isHost?pub(true):V;
- if(!S){a.innerHTML='<h2>Комната '+code+'</h2><p>Ждём ведущего…</p>';return}
- let h='<b>Комната: '+code+'</b> · 🎤 '+esc(S.hostName)+'<div class="pl">';
- S.players.forEach(p=>{h+=`<div class='p ${S.cur&&S.cur.buzzer===p.id?'b':''}'>${esc(p.name)}${p.id===myId?' (ты)':''}: <b>${p.score}</b></div>`});h+='</div>';
- if(S.phase==='lobby')h+=isHost?`<p>Зашло игроков: ${S.players.length}. Код: <b>${code}</b></p><button data-a='start'>Начать игру</button>`:'<p>Ждём, пока ведущий начнёт…</p>';
- else if(S.phase==='board')h+=boardHtml();else h+=finalHtml();
- a.innerHTML=h+'<p style="color:#ff8">'+err+'</p>'}
+ if(!S){paint(`<div class='card c'><div class='lab'>комната</div><div class='code'>${code}</div><p class='mute'>Подключаемся, ждём ведущего…</p></div>`);return}
+ let h=`<div class='top'><span>СВОЯК//ОНЛАЙН · <b>${code}</b> · 🎤 ${esc(S.hostName)}</span><button class='chip' data-a='mute'>${muted?'🔇 звук выкл':'🔊 звук'}</button></div>`+players();
+ h+=S.phase==='lobby'?lobby():S.phase==='board'?boardHtml():finalHtml();
+ paint(h);sounds()}
 render();
 </script></body></html>
