@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Свояк онлайн</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#0b1030;color:#fff}.w{max-width:960px;margin:0 auto;padding:14px}input,button{font:inherit;padding:12px 14px;border-radius:10px;border:0;margin:4px 0}input{background:#1b2260;color:#fff;width:100%}button{background:#ffd23f;color:#111;font-weight:700;cursor:pointer;width:100%}button.g{background:#2ecc71}button.r{background:#e74c3c;color:#fff}button.s{background:#3a4399;color:#fff}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}.grid{display:grid;gap:6px;margin-top:10px}.cell{background:#1b2fbf;text-align:center;padding:16px 2px;border-radius:8px;font-size:20px;font-weight:800;color:#ffd23f}.cell.u{background:#10163f;color:transparent}.cat{background:#27369a;padding:8px 3px;text-align:center;border-radius:8px;font-size:12px;font-weight:700}.pl{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.p{background:#1b2260;border-radius:10px;padding:8px 12px}.p.b{outline:3px solid #ffd23f}.q{background:#1b2fbf;border-radius:14px;padding:22px;text-align:center;margin-top:12px}.q h2{font-size:26px;margin:8px 0}.a{color:#2ecc71;font-weight:700}</style></head><body><div class="w" id="app"></div>
+<script>
+const sb=supabase.createClient('https://oqvebfgpvqgfbmygmowj.supabase.co','sb_publishable_JNu0J0xODiiA_7Z879WbtQ_wQGRo8VQ');
+const D=[["Раунд 1",1,[["ORA (в ответе есть «ора»)",[["Очень высокое место на земле, на вершине снег","Гора"],["Домик лисы под землёй","Нора"],["Место, где сидит начальник и лежат бумаги","Контора"],["Что держит мост или дом снизу","Опора"],["Римская богиня утренней зари","Аврора"]]],["Столицы",[["Столица Японии","Токио"],["Столица Италии","Рим"],["Столица Бразилии","Бразилиа"],["Столица Австралии","Канберра"],["Столица Казахстана","Астана"]]],["Всякое",[["Сколько дней в феврале в високосный год?","29"],["Самая большая планета Солнечной системы","Юпитер"],["Сколько минут свет идёт от Солнца до Земли?","Около 8"],["Язык программирования, названный в честь британского комик-шоу","Python"],["Самый большой океан","Тихий"]]]]],["Раунд 2",2,[["Музыка",[["Сколько струн у классической гитары?","6"],["Сколько клавиш у стандартного пианино?","88"],["Шотландский духовой инструмент с мешком","Волынка"],["Изогнутый золотистый духовой инструмент джаза","Саксофон"],["Кто написал «Времена года»?","Вивальди"]]],["Изобрази животное",[["Изобрази звук: кошка","Судит ведущий"],["Изобрази звук: корова","Судит ведущий"],["Изобрази звук: сова","Судит ведущий"],["Изобрази звук: дельфин","Судит ведущий"],["Изобрази звук: лось","Судит ведущий"]]],["Факты",[["В каком виде спорта играют шайбой?","Хоккей"],["Что иногда грызут акулы на дне океана?","Подводные кабели"],["Что значит слово «рофл»?","Смех, шутка"],["Сколько цветов у радуги?","7"],["В какой стране Эйфелева башня?","Франция"]]]]],["Раунд 3",3,[["Школа",[["Личная охрана Ивана Грозного","Опричники"],["Число «пи» до двух знаков после запятой","3,14"],["В каком году началась Великая Отечественная война?","1941"],["Сколько материков на Земле?","6"],["Химический символ золота","Au"]]],["Рэп",[["Кто исполнил Lose Yourself?","Eminem"],["Альбом Эминема 2000 года, где The Real Slim Shady","The Marshall Mathers LP"],["Кто выпустил альбом To Pimp a Butterfly?","Kendrick Lamar"],["Настоящее имя Jay-Z","Шон Картер"],["Кто выпустил альбом The Chronic?","Dr. Dre"]]]]]];
+const R=D.map(([n,m,cs])=>({name:n,cats:cs.map(([cn,qs])=>({name:cn,qs:qs.map(([q,a],i)=>({v:(i+1)*100*m,q,a}))}))}));
+const myId=sessionStorage.id||(sessionStorage.id='u'+Math.random().toString(36).slice(2,9));
+let ch,isHost=false,X=null,code='',err='',myName='';
+function pub(){if(!X)return null;const c=X.cur;let cur=null;if(c){const q=R[X.round].cats[c.c].qs[c.i];cur={...c,cat:R[X.round].cats[c.c].name,v:q.v,q:q.q}}return {players:X.players,round:X.round,used:X.used,cur}}
+function push(){if(isHost){ch.send({type:'broadcast',event:'state',payload:pub()})}render()}
+function join(host,c,name){code=c.toUpperCase();myName=name||(host?'Ведущий':'Игрок');isHost=host;
+ ch=sb.channel('svoyak-'+code,{config:{broadcast:{self:false}}});
+ ch.on('broadcast',{event:'state'},m=>{if(!isHost){X=m.payload;render()}});
+ if(host){X={players:[{id:myId,name:myName,score:0,host:true}],round:0,used:[],cur:null};
+  ch.on('broadcast',{event:'hello'},m=>{const p=m.payload;if(!X.players.find(x=>x.id===p.id))X.players.push({id:p.id,name:p.name,score:0});push()});
+  ch.on('broadcast',{event:'buzz'},m=>{const c=X.cur,id=m.payload.id;if(c&&!c.buzzer&&!c.tried.includes(id)){c.buzzer=id;push()}});}
+ ch.subscribe(s=>{if(s==='SUBSCRIBED'){if(host)push();else ch.send({type:'broadcast',event:'hello',payload:{id:myId,name:myName}});render()}});render()}
+function pick(c,i){const k=X.round+'-'+c+'-'+i;if(X.cur||X.used.includes(k))return;X.used.push(k);X.cur={c,i,buzzer:null,tried:[],reveal:false};push()}
+function judge(ok){const c=X.cur,v=R[X.round].cats[c.c].qs[c.i].v,p=X.players.find(x=>x.id===c.buzzer);if(ok){p.score+=v;X.cur=null}else{p.score-=v;c.tried.push(c.buzzer);c.buzzer=null}push()}
+function skip(){X.cur.reveal=true;push();setTimeout(()=>{X.cur=null;push()},3000)}
+function nxt(){if(X.cur)return;X.round=(X.round+1)%R.length;push()}
+function buzz(){ch.send({type:'broadcast',event:'buzz',payload:{id:myId}})}
+function mk(){const n=document.getElementById('n').value;join(true,Math.random().toString(36).slice(2,6),n)}
+function jn(){const n=document.getElementById('n').value,c=document.getElementById('c').value.trim();if(!c){err='Введи код';return render()}join(false,c,n)}
+function render(){const a=document.getElementById('app');
+ if(!code){a.innerHTML='<h1>Свояк онлайн</h1><input id=n placeholder="Твоё имя"><button onclick="mk()">Создать комнату (я ведущий)</button><h3>Или войти</h3><input id=c placeholder="Код комнаты"><button class=s onclick="jn()">Войти</button><p style="color:#ff8">'+err+'</p>';return}
+ if(!X){a.innerHTML='<h2>Комната '+code+'</h2><p>Ждём ведущего…</p>';return}
+ let h='<b>Комната: '+code.toUpperCase()+'</b> · '+R[X.round].name+'<div class=pl>';
+ X.players.forEach(p=>{h+='<div class="p '+(X.cur&&X.cur.buzzer===p.id?'b':'')+'">'+p.name+(p.id===myId?' (ты)':'')+(p.host?' 🎤':'')+': <b>'+p.score+'</b></div>'});h+='</div>';
+ const c=X.cur;
+ if(c){const cat=c.cat||R[X.round].cats[c.c].name,qq=R[X.round].cats[c.c].qs[c.i];
+  h+='<div class=q><div>'+cat+' · '+qq.v+'</div><h2>'+qq.q+'</h2>';
+  if(isHost||c.reveal)h+='<div class=a>Ответ: '+qq.a+'</div>';
+  if(c.buzzer)h+='<h3>Отвечает: '+X.players.find(p=>p.id===c.buzzer).name+'</h3>';h+='</div><div class=row style="margin-top:10px">';
+  if(isHost){if(c.buzzer)h+='<button class=g onclick="judge(true)">Верно</button><button class=r onclick="judge(false)">Неверно</button>';h+='<button class=s onclick="skip()">Никто не ответил</button>'}
+  else if(!c.buzzer&&!c.tried.includes(myId))h+='<button style="font-size:30px;padding:26px" onclick="buzz()">Я!</button>';
+  h+='</div>'}
+ else{const cats=R[X.round].cats;h+='<div class=grid style="grid-template-columns:repeat('+cats.length+',1fr)">';cats.forEach(k=>h+='<div class=cat>'+k.name+'</div>');
+  for(let i=0;i<5;i++)cats.forEach((k,ci)=>{const u=X.used.includes(X.round+'-'+ci+'-'+i);h+='<div class="cell '+(u?'u':'')+'" '+(isHost&&!u?'onclick="pick('+ci+','+i+')"':'')+'>'+k.qs[i].v+'</div>'});
+  h+='</div>'+(isHost?'<p>Жми на клетку. <button class=s onclick="nxt()">Следующий раунд</button></p>':'<p>Ведущий выбирает вопрос…</p>')}
+ a.innerHTML=h}
+render();
+</script></body></html>
