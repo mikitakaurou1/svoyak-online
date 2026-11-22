@@ -5,15 +5,18 @@
 :root{--bg:#0e0f0c;--panel:#181a15;--panel2:#20231b;--line:#33372b;--ink:#f1efe6;--mute:#8d9080;--acc:#c8f23a;--hot:#ff6a2b;--bad:#ff5c5c;--ok:#5fe08a;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Onest,system-ui,sans-serif}
-body{background-image:radial-gradient(#23261e 1px,transparent 1px);background-size:22px 22px;min-height:100vh}
-.w{max-width:980px;margin:0 auto;padding:12px 12px 130px}
+body{min-height:100vh}
+#bg{position:fixed;left:0;top:0;z-index:0;pointer-events:none}
+.w{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:12px 12px 130px}
+.ic{width:1.1em;height:1.1em;vertical-align:-.18em;flex:none}
+.ic.big{width:1.5em;height:1.5em;margin:0 .12em;color:var(--acc);vertical-align:-.3em}
 .top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:12px;color:var(--mute);padding:6px 0 10px}
 .top b{color:var(--acc)}
 button{font:inherit;cursor:pointer;border:2px solid #000;border-radius:6px;padding:13px 16px;margin:6px 0;width:100%;background:var(--acc);color:#0e0f0c;font-weight:800;box-shadow:3px 3px 0 #000;transition:transform .08s,box-shadow .08s;touch-action:manipulation}
 button:active{transform:translate(3px,3px);box-shadow:0 0 0 #000}
 button.s{background:var(--panel2);color:var(--ink);border-color:var(--line)}
 button.g{background:var(--ok)}button.r{background:var(--bad)}
-.chip{width:auto;margin:0;padding:6px 10px;box-shadow:none;background:var(--panel);color:var(--ink);border:2px solid var(--line);font-family:var(--mono);font-size:12px;font-weight:500}
+.chip{width:auto;margin:0;padding:6px 10px;box-shadow:none;background:var(--panel);color:var(--ink);border:2px solid var(--line);font-family:var(--mono);font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px}
 input{background:var(--panel);border:2px solid var(--line);color:var(--ink);border-radius:6px;padding:13px;width:100%;font:inherit;margin:6px 0}
 input:focus{outline:none;border-color:var(--acc)}
 .lab{font-family:var(--mono);font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em;margin:6px 0}
@@ -40,33 +43,38 @@ input:focus{outline:none;border-color:var(--acc)}
 .cell.h:active{transform:translate(3px,3px);box-shadow:none}
 .cell.u{opacity:.16;box-shadow:none}
 .cell.t{font-family:Onest,sans-serif;font-size:15px;color:var(--ink)}
-.cell i{position:absolute;top:3px;right:6px;color:var(--hot);font-style:normal;font-size:11px}
+.cell i{position:absolute;top:5px;right:6px;width:8px;height:8px;background:var(--hot)}
 .q{background:var(--panel);border:2px solid #000;box-shadow:5px 5px 0 #000;border-radius:8px;padding:clamp(16px,4vw,32px);margin:10px 0;animation:in .2s}
 .meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
 .q h2{font-size:clamp(22px,5.4vw,40px);line-height:1.2;margin:14px 0;font-weight:800}
-.mod{display:inline-block;background:var(--hot);color:#0e0f0c;font-weight:800;padding:5px 9px;border-radius:4px;font-size:13px;margin-top:10px}
+.mod{display:inline-flex;align-items:center;gap:8px;background:var(--hot);color:#0e0f0c;font-weight:800;padding:6px 10px;border-radius:4px;font-size:13px;margin-top:10px}
 .a{display:inline-block;background:var(--ok);color:#06210f;font-weight:800;padding:8px 12px;border-radius:4px;font-size:clamp(16px,4vw,24px)}
 .a.priv{background:transparent;color:var(--ok);border:2px dashed var(--ok)}
 .who{font-family:var(--mono);color:var(--acc);font-size:15px;margin:12px 0 0}
 .dock{position:sticky;bottom:0;background:var(--bg);border-top:2px solid var(--line);padding:8px 0}
 .row{display:flex;gap:10px}.row>*{flex:1}
 .buzz{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:956px;margin:0 auto;font-size:34px;padding:26px 0;z-index:5}
-.win{text-align:center;font-size:clamp(24px,7vw,44px);font-weight:800;color:var(--acc);margin:16px 0}
+.win{display:flex;align-items:center;justify-content:center;gap:12px;font-size:clamp(24px,7vw,44px);font-weight:800;color:var(--acc);margin:16px 0}
+.win .ic{width:1.3em;height:1.3em}
 .ok{color:var(--ok)}.no{color:var(--bad)}
 .ans{background:var(--panel);border:2px solid var(--line);border-radius:6px;padding:10px 12px;margin:8px 0}
+.pn{display:flex;align-items:center;gap:8px;padding:4px 0}
 .toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--acc);color:#0e0f0c;font-weight:800;padding:10px 16px;border-radius:6px;border:2px solid #000;box-shadow:3px 3px 0 #000;z-index:20}
 </style></head><body><div class='w' id='app'></div>
 <script>
 const sb=supabase.createClient('https://oqvebfgpvqgfbmygmowj.supabase.co','sb_publishable_JNu0J0xODiiA_7Z879WbtQ_wQGRo8VQ');
+const D={mic:'M12 3a3 3 0 00-3 3v5a3 3 0 006 0V6a3 3 0 00-3-3zM6 11a6 6 0 0012 0M12 17v4',on:'M4 9v6h4l5 4V5L8 9zM16 9c1.5 1.5 1.5 4.5 0 6M19 7c3 3 3 7 0 10',off:'M4 9v6h4l5 4V5L8 9zM17 9l5 6M22 9l-5 6',gift:'M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7C9 7 8 3 10.5 3S12 6 12 7zM12 7c3 0 4-4 1.5-4S12 6 12 7z',swap:'M4 8h14l-3-3M20 16H6l3 3',x2:'M3 6l7 8M10 6l-7 8M14 9a3 3 0 016 0c0 3-6 5-6 8h6',dice:'M4 4h16v16H4zM8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01',cup:'M7 4h10v5a5 5 0 01-10 0zM7 6H3c0 3 1 5 4 5M17 6h4c0 3-1 5-4 5M12 14v4M8 20h8',check:'M5 12l5 5 9-10',user:'M12 4a4 4 0 100 8 4 4 0 000-8zM4 21c0-4 4-6 8-6s8 2 8 6',crown:'M3 18h18M4 18L3 7l5 4 4-6 4 6 5-4-1 11',lion:'M12 3l2 3 3-1-1 3 3 2-3 2 1 3-3-1-2 3-2-3-3 1 1-3-3-2 3-2-1-3 3 1zM12 10a2 2 0 100 4 2 2 0 000-4',spider:'M12 9a3 3 0 100 6 3 3 0 000-6zM9 10L4 6M9 12H3M9 14l-5 4M15 10l5-4M15 12h6M15 14l5 4',person:'M12 4a3 3 0 100 6 3 3 0 000-6zM6 20c0-4 3-6 6-6s6 2 6 6',ship:'M3 15h18l-3 5H6zM12 3v10M12 4l6 8h-6',ice:'M12 3l7 4v10l-7 4-7-4V7zM12 12l7-5M12 12L5 7M12 12v9',heart:'M12 20s-8-5-8-11a4.5 4.5 0 018-2.5A4.5 4.5 0 0120 9c0 6-8 11-8 11z',wizard:'M12 3l6 15H6zM3 18h18M10 10h.01',ring:'M12 21a6 6 0 100-12 6 6 0 000 12zM10 6l2-3 2 3-2 2z',volcano:'M3 20L9 9h6l6 11zM12 8V4M9 5L8 3M15 5l1-2',rat:'M4 17c0-4 4-7 9-7 4 0 7 3 7 6v1zM17 10a2 2 0 100-4 2 2 0 000 4M2 18c-1 1 0 3 2 2',chef:'M7 12a4 4 0 117-3 3.5 3.5 0 014 5H7zM7 14v5h10v-5',flask:'M9 3h6M10 3v6l-5 9a2 2 0 002 3h10a2 2 0 002-3l-5-9V3',van:'M2 7h13v10H2zM15 10h4l3 3v4h-7zM5 19a2 2 0 104 0 2 2 0 10-4 0M16 19a2 2 0 104 0 2 2 0 10-4 0'};
+const ic=(n,c)=>`<svg class='ic ${c||''}' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'><path d='${D[n]}'/></svg>`;
 const P=`
 Космос|Какая планета Солнечной системы ближайшая к Солнцу?~Меркурий|Кто первым в истории вышел в открытый космос?~Алексей Леонов|Как называется самый большой спутник Юпитера?~Ганимед|Как называется граница вокруг чёрной дыры, из-за которой не вырвется даже свет?~Горизонт событий|Как называется самая высокая гора Солнечной системы, она находится на Марсе?~Олимп (Olympus Mons)|С какой галактикой через миллиарды лет столкнётся наш Млечный Путь?~С галактикой Андромеды#
 Кино|Как зовут героя Киану Ривза в «Матрице»?~Нео|Кто снял «Начало» и «Интерстеллар»?~Кристофер Нолан|Какой корейский фильм первым получил «Оскар» как лучший фильм?~Паразиты|Какой режиссёр снял «Космическую одиссею 2001 года»?~Стэнли Кубрик|Какой фильм Тарантино получил «Золотую пальмовую ветвь» в Каннах в 1994 году?~Криминальное чтиво|Кто снял фильм «Сталкер» 1979 года?~Андрей Тарковский#
 Игры|Как зовут знаменитого водопроводчика Nintendo?~Марио|Какая консоль Sony вышла в Японии в декабре 1994 года?~PlayStation|Какая студия создала Half-Life?~Valve|Какой город уничтожен вирусом в Resident Evil 2?~Раккун-Сити|Какой позывной у героя первой Metal Gear Solid?~Солид Снейк|В какой игре 1996 года впервые появилась Лара Крофт?~Tomb Raider#
 Рэп|Кто автор альбома «Горгород»?~Oxxxymiron|Из какого города Kendrick Lamar?~Комптон|Кто основал лейбл Aftermath?~Dr. Dre|Из какого района Нью-Йорка группа Wu-Tang Clan?~Статен-Айленд|Кто выпустил альбом Illmatic?~Nas|Кто выпустил альбом The Blueprint в 2001 году?~Jay-Z#
+Русский рэп|Кто исполнил трек «Cadillac» вместе с Элджеем?~MORGENSHTERN|Как по паспорту зовут Басту?~Василий Вакуленко|Из какого города группа «Каста»?~Ростов-на-Дону|Какой альбом Big Baby Tape вышел в 2018 году?~Dragonborn|С кем Oxxxymiron сошёлся в Versus Battle в 2017 году?~Слава КПСС|Кто спродюсировал трек «Cadillac»?~Slava Marlow#
 География|Какая столица у Канады?~Оттава|Какое озеро самое глубокое в мире?~Байкал|Какая самая длинная река Европы?~Волга|Какой пролив разделяет Азию и Северную Америку?~Берингов|Какая страна целиком окружена территорией ЮАР?~Лесото|Какая самая большая пустыня мира, если считать полярные?~Антарктическая#
 IT|Что означает аббревиатура HTML?~HyperText Markup Language|Кто создал ядро Linux?~Линус Торвальдс|Как называется система контроля версий, созданная Торвальдсом?~Git|Какой порт по умолчанию у HTTPS?~443|В каком году запущен YouTube?~2005|Кто создал язык JavaScript?~Брендан Айк#
-Эмодзи-ребусы|Назови фильм: 🦁👑~Король Лев|Назови фильм: 🕷️🧑~Человек-паук|Назови фильм: 🚢🧊❤️~Титаник|Назови фильм: 🧙‍♂️💍🌋~Властелин колец|Назови мультфильм: 🐀👨‍🍳~Рататуй|Назови сериал: 🧪👨‍🔬🚐~Во все тяжкие#
-♪ Музыка|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек~Знает ведущий#
+Ребусы-картинки|Назови фильм: {lion}{crown}~Король Лев|Назови фильм: {spider}{person}~Человек-паук|Назови фильм: {ship}{ice}{heart}~Титаник|Назови фильм: {wizard}{ring}{volcano}~Властелин колец|Назови мультфильм: {rat}{chef}~Рататуй|Назови сериал: {flask}{van}~Во все тяжкие#
+Музыка|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек (ведущий вставит ссылку)~Знает ведущий|Угадай трек~Знает ведущий#
 История|Кто был первым императором Рима?~Октавиан Август|В каком году пала Берлинская стена?~1989|Как звали последнего российского императора?~Николай II|В каком году произошла Куликовская битва?~1380|Какой договор 1648 года завершил Тридцатилетнюю войну?~Вестфальский мир|Какой документ 1215 года ограничил власть английского короля?~Великая хартия вольностей#
 Литература|Кто автор «Мастера и Маргариты»?~Булгаков|Как зовут главного героя «Преступления и наказания»?~Родион Раскольников|Кто написал «1984»?~Джордж Оруэлл|Какой роман в стихах Пушкин писал более семи лет?~Евгений Онегин|Кто автор «Над пропастью во ржи»?~Сэлинджер|Кто автор «Сто лет одиночества»?~Габриэль Гарсиа Маркес#
 Наука|Сколько сердец у осьминога?~Три|Какой газ преобладает в атмосфере Земли?~Азот|Какой химический символ у золота?~Au|Сколько костей у взрослого человека?~206|Какой минерал самый твёрдый по шкале Мооса?~Алмаз|Какую частицу обнаружили на Большом адронном коллайдере в 2012 году?~Бозон Хиггса#
@@ -91,15 +99,27 @@ IT|Что означает аббревиатура HTML?~HyperText Markup Langu
 Россия и СССР|Кто первым полетел в космос?~Юрий Гагарин|Какой город был столицей СССР?~Москва|В каком году распался СССР?~1991|Как называлась советская космическая станция, затопленная в 2001 году?~Мир|Кто был последним руководителем СССР?~Михаил Горбачёв|Как называлась первая в мире атомная электростанция, запущенная в 1954 году?~Обнинская АЭС#
 Языки|На каком языке говорят в Бразилии?~Португальский|Как по-английски «спасибо»?~Thank you|Как по-французски «привет»?~Bonjour|Какой язык государственный в Австрии?~Немецкий|Какой язык самый распространённый по числу носителей?~Китайский (путунхуа)|Как называется международный язык, созданный Заменгофом в 1887 году?~Эсперанто
 `.split('#').map(l=>l.trim()).filter(Boolean).map(l=>{const a=l.split('|');return{n:a[0],q:a.slice(1).map(x=>{const t=x.split('~');return{q:t[0].trim(),a:t[1].trim()}})}});
-const MODS={secret:'🎁 Вопрос с секретом: ведущий отдаёт его одному игроку',swap:'🔄 Обмен: победитель может поменяться баллами с любым игроком',x2:'✖2 Двойные баллы за этот вопрос',stake:'🎲 Ставка: игрок сам называет ставку'};
+const isMusic=n=>n==='Музыка';
+const MODS={secret:['gift','Вопрос с секретом: ведущий отдаёт его одному игроку'],swap:['swap','Обмен: победитель может поменяться баллами с любым игроком'],x2:['x2','Двойные баллы за этот вопрос'],stake:['dice','Ставка: игрок сам называет ставку']};
 const g=id=>document.getElementById(id);
-const esc=s=>String(s).replace(/[&<>']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;'}[c]));
+const APOS=String.fromCharCode(39);
+const esc=s=>String(s).replace(/[&<>']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',[APOS]:'&#39;'}[c]));
+const qh=s=>esc(s).replace(/\{(\w+)\}/g,(m,k)=>D[k]?ic(k,'big'):'');
 const sh=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const myId=sessionStorage.id||(sessionStorage.id='u'+Math.random().toString(36).slice(2,9));
 const QR=new URLSearchParams(location.search).get('r')||'';
 let ch,isHost=false,X=null,V=null,S=null,code='',err='',myName='',LAST='',PV=null,muted=localStorage.muted==='1',AC=null;
 const gp=id=>X.players.find(p=>p.id===id);
 const nm=id=>{const p=S.players.find(x=>x.id===id);return p?esc(p.name):'?'};
+(function(){const cv=document.createElement('canvas');cv.id='bg';document.body.prepend(cv);const x=cv.getContext('2d');let W,H,mx=-999,my=-999,tx=-999,ty=-999;const GAP=24,R=150,still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function size(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';x.setTransform(d,0,0,d,0,0)}
+ addEventListener('resize',()=>{size();if(still)draw()});size();
+ const mv=e=>{if(mx<-900){mx=e.clientX;my=e.clientY}tx=e.clientX;ty=e.clientY};
+ addEventListener('pointermove',mv,{passive:true});addEventListener('pointerdown',mv,{passive:true});
+ addEventListener('pointerup',e=>{if(e.pointerType!=='mouse')setTimeout(()=>{tx=-999;ty=-999;mx=-999;my=-999},500)});
+ function draw(){x.clearRect(0,0,W,H);for(let gx=GAP/2;gx<W;gx+=GAP)for(let gy=GAP/2;gy<H;gy+=GAP){const dx=gx-mx,dy=gy-my,d=Math.sqrt(dx*dx+dy*dy);let px=gx,py=gy,r=1.2;if(d<R){const k=1-d/R,push=k*k*11;px+=dx/(d||1)*push;py+=dy/(d||1)*push;r=1.2+k*2;x.fillStyle='rgba(200,242,58,'+(.2+k*.8)+')'}else x.fillStyle='rgba(130,138,100,.3)';x.beginPath();x.arc(px,py,r,0,6.2832);x.fill()}}
+ function frame(){mx+=(tx-mx)*.22;my+=(ty-my)*.22;draw();requestAnimationFrame(frame)}
+ if(still)draw();else frame()})();
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
 function tone(f,t,d,type,v){const a=ac();if(!a||muted)return;const o=a.createOscillator(),k=a.createGain(),s=a.currentTime+t;o.type=type;o.frequency.value=f;k.gain.setValueAtTime(0.0001,s);k.gain.linearRampToValueAtTime(v,s+.01);k.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(k);k.connect(a.destination);o.start(s);o.stop(s+d+.03)}
 const SND={ok(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.08,.2,'triangle',.14))},bad(){tone(196,0,.28,'sawtooth',.1);tone(147,.16,.4,'sawtooth',.1)},buzz(){tone(880,0,.08,'square',.07);tone(1175,.07,.14,'square',.07)},pick(){tone(440,0,.07,'square',.05);tone(660,.06,.09,'square',.05)},final(){[392,494,587,784,988].forEach((f,i)=>tone(f,i*.12,.32,'triangle',.14))}};
@@ -124,14 +144,14 @@ function join(host,c,name){code=c.toUpperCase();isHost=host;myName=(name||'').tr
   .on('broadcast',{event:'ans'},m=>{const f=X.f,id=m.payload.id;if(f&&f.stage==='answer'&&f.order.includes(id)){f.ans[id]=String(m.payload.t).slice(0,100);push()}})}
  ch.subscribe(s=>{if(s==='SUBSCRIBED'){if(!host)ch.send({type:'broadcast',event:'hello',payload:{id:myId,name:myName}});render()}});render()}
 function embed(u){if(!u)return'';let s='';try{const x=new URL(u);if(x.hostname.indexOf('soundcloud.com')>-1)s='https://w.soundcloud.com/player/?auto_play=true&url='+encodeURIComponent(u);else if(x.hostname==='youtu.be')s='https://www.youtube.com/embed/'+x.pathname.slice(1)+'?autoplay=1';else if(x.hostname.indexOf('youtube.com')>-1)s='https://www.youtube.com/embed/'+x.searchParams.get('v')+'?autoplay=1'}catch(e){}
- return s?`<iframe src='${s}' width='100%' height='166' allow='autoplay' style='border:0;border-radius:6px;margin-top:10px'></iframe>`:'<p class="mute">Не понял ссылку</p>'}
-function after(c){const music=X.boards[X.round].cats[c.c].n[0]==='♪';if(music&&!c.urlDone)c.stage='url';else if(c.mod==='secret'&&!c.only)c.stage='assign';else c.stage=null}
+ return s?`<iframe src='${s}' width='100%' height='166' allow='autoplay' style='border:0;border-radius:6px;margin-top:10px'></iframe>`:`<p class='mute'>Не понял ссылку</p>`}
+function after(c){const music=isMusic(X.boards[X.round].cats[c.c].n);if(music&&!c.urlDone)c.stage='url';else if(c.mod==='secret'&&!c.only)c.stage='assign';else c.stage=null}
 const ACT={
  mk(){join(true,Math.random().toString(36).slice(2,6).toUpperCase(),g('n').value)},
  jn(){const c=g('c').value.trim();if(!c){err='Введи код комнаты';return render()}join(false,c,g('n').value)},
  mute(){muted=!muted;localStorage.muted=muted?'1':'0';render()},
  copy(){const l=location.origin+location.pathname+'?r='+code;(navigator.clipboard?navigator.clipboard.writeText(l):Promise.reject()).then(()=>toast('Ссылка скопирована'),()=>toast(l))},
- start(){const s=sh(P),fin=s.slice(10).filter(c=>c.n[0]!=='♪').slice(0,5);
+ start(){const s=sh(P),fin=s.slice(10).filter(c=>!isMusic(c.n)).slice(0,5);
   X.boards=[0,1].map(r=>{const cats=s.slice(r*5,r*5+5).map(c=>({n:c.n,qs:c.q.slice(0,5).map((x,i)=>({v:(i+1)*100*(r+1),q:x.q,a:x.a}))}));const keys=[];for(let c=0;c<5;c++)for(let i=1;i<5;i++)keys.push(c+'-'+i);const t=sh(['secret','swap','x2','stake']),mods={};sh(keys).slice(0,4).forEach((k,j)=>mods[k]=t[j]);return{cats,mods}});
   X.fin=fin.map(c=>({n:c.n,q:c.q[5].q,a:c.q[5].a}));X.phase='board';X.round=0;X.used=[];X.cur=null;push()},
  again(){X.players.forEach(p=>p.score=0);X.phase='lobby';X.round=0;X.used=[];X.cur=null;X.f=null;push()},
@@ -171,16 +191,16 @@ function hostCur(c){let h='';
   h+=`<button class='s' data-a='skip'>Никто не ответил</button>`}
  return h}
 function players(){if(!S.players.length)return'';return `<div class='pl'>`+S.players.map(p=>`<div class='p${S.cur&&S.cur.buzzer===p.id?' b':''}${PV&&PV.sc[p.id]!==undefined&&PV.sc[p.id]!==p.score?' pop':''}'><small>${esc(p.name)}${p.id===myId?' (ты)':''}</small><b class='${p.score<0?'neg':''}'>${p.score}</b></div>`).join('')+`</div>`}
-function lobby(){return isHost?`<div class='card c'><div class='lab'>код комнаты</div><div class='code'>${code}</div><button class='s' data-a='copy'>Скопировать ссылку для друзей</button></div><div class='card'><div class='lab'>Игроков: ${S.players.length}</div>${S.players.map(p=>`<div>• ${esc(p.name)}</div>`).join('')||`<p class='mute'>Пока никого. Кинь друзьям ссылку.</p>`}</div><button data-a='start'>Начать игру</button>`:`<div class='card c'><div class='lab'>ты в комнате</div><div class='code'>${code}</div><p class='mute'>Ждём, пока ведущий начнёт. Игроков: ${S.players.length}</p></div>`}
+function lobby(){return isHost?`<div class='card c'><div class='lab'>код комнаты</div><div class='code'>${code}</div><button class='s' data-a='copy'>Скопировать ссылку для друзей</button></div><div class='card'><div class='lab'>Игроков: ${S.players.length}</div>${S.players.map(p=>`<div class='pn'>${ic('user')} ${esc(p.name)}</div>`).join('')||`<p class='mute'>Пока никого. Кинь друзьям ссылку.</p>`}</div><button data-a='start'>Начать игру</button>`:`<div class='card c'><div class='lab'>ты в комнате</div><div class='code'>${code}</div><p class='mute'>Ждём, пока ведущий начнёт. Игроков: ${S.players.length}</p></div>`}
 function boardHtml(){const c=S.cur;let h='';
  if(!c){h+=`<div class='lab'>Раунд ${S.round+1} из 2, потом финал</div><div class='grid'>`+S.cats.map(n=>`<div class='cat'>${esc(n)}</div>`).join('');
-  for(let i=0;i<5;i++)S.cats.forEach((n,ci)=>{const u=S.used.includes(S.round+'-'+ci+'-'+i),m=isHost&&S.mods&&S.mods[ci+'-'+i]&&!u;h+=`<div class='cell${u?' u':''}${isHost&&!u?' h':''}' ${isHost&&!u?`data-a='pick' data-v='${ci}-${i}'`:''}>${S.vals[i]}${m?'<i>●</i>':''}</div>`});
+  for(let i=0;i<5;i++)S.cats.forEach((n,ci)=>{const u=S.used.includes(S.round+'-'+ci+'-'+i),m=isHost&&S.mods&&S.mods[ci+'-'+i]&&!u;h+=`<div class='cell${u?' u':''}${isHost&&!u?' h':''}' ${isHost&&!u?`data-a='pick' data-v='${ci}-${i}'`:''}>${S.vals[i]}${m?'<i></i>':''}</div>`});
   h+='</div>';
-  h+=isHost?`<p class='mute'>Жми на клетку. Оранжевая точка: модификатор, её видишь только ты.</p><button class='s' data-a='nxt'>${S.round===0?'К раунду 2':'К финалу'}</button>`:`<p class='mute'>Ведущий выбирает вопрос…</p>`;
+  h+=isHost?`<p class='mute'>Жми на клетку. Оранжевый квадрат: модификатор, его видишь только ты.</p><button class='s' data-a='nxt'>${S.round===0?'К раунду 2':'К финалу'}</button>`:`<p class='mute'>Ведущий выбирает вопрос…</p>`;
   return h}
  h+=`<div class='q'><div class='meta'><span>${esc(c.cat)}</span><span>${c.v}</span></div>`;
- if(c.mod)h+=`<div class='mod'>${MODS[c.mod]}</div>`;
- h+=`<h2>${esc(c.q)}</h2>`;
+ if(c.mod)h+=`<div class='mod'>${ic(MODS[c.mod][0])}<span>${MODS[c.mod][1]}</span></div>`;
+ h+=`<h2>${qh(c.q)}</h2>`;
  if(c.url)h+=embed(c.url);
  if(c.a)h+=`<div class='a${c.reveal?'':' priv'}'>${c.reveal?'Ответ':'Ответ (видишь только ты)'}: ${esc(c.a)}</div>`;
  if(c.buzzer)h+=`<p class='who'>отвечает: ${nm(c.buzzer)}${c.stake?' · ставка '+c.stake:''}</p>`;
@@ -195,18 +215,18 @@ function finalHtml(){const f=S.fin;let h=`<div class='lab'>финал</div>`;
  if(f.stage==='strike'){h+=`<p>Вычёркивает тему: <b>${nm(f.turn)}</b></p><div class='grid f'>`;
   f.cats.forEach((n,i)=>{const s=f.struck.includes(i);h+=`<div class='cell t${s?' u':''}${isHost&&!s?' h':''}' ${isHost&&!s?`data-a='strike' data-v='${i}'`:''}>${esc(n)}</div>`});h+='</div>';if(isHost)h+=`<p class='mute'>Жми на тему, которую называет игрок.</p>`;return h}
  h+=`<div class='q'><div class='meta'><span>тема финала</span></div><h2>${esc(f.cats[f.rem])}</h2>`;
- if(f.fq)h+=`<div style='font-size:clamp(18px,4.5vw,28px)'>${esc(f.fq)}</div>`;
+ if(f.fq)h+=`<div style='font-size:clamp(18px,4.5vw,28px)'>${qh(f.fq)}</div>`;
  if(f.fa)h+=`<p><span class='a'>Ответ: ${esc(f.fa)}</span></p>`;h+='</div>';
  const mine=f.order.includes(myId);
- if(f.stage==='bet'){h+=`<div class='lab'>ставки</div>`;f.order.forEach(id=>h+=`<div class='ans'>${nm(id)}: ${f.bets[id]?(isHost?f.bets[id]:'готово ✔'):'думает…'}</div>`);
+ if(f.stage==='bet'){h+=`<div class='lab'>ставки</div>`;f.order.forEach(id=>h+=`<div class='ans'>${nm(id)}: ${f.bets[id]?(isHost?f.bets[id]:ic('check')+' готово'):'думает…'}</div>`);
   if(mine&&!f.bets[myId])h+=`<input id='bt' type='number' inputmode='numeric' placeholder='Твоя ставка (до всех твоих баллов)'><button data-a='bet'>Поставить</button>`;
   if(isHost)h+=`<button data-a='showq'>Показать вопрос</button>`}
- else if(f.stage==='answer'){h+=`<div class='lab'>пишите ответы</div>`;f.order.forEach(id=>h+=`<div class='ans'>${nm(id)}: ${f.ans[id]?'ответил ✔':'пишет…'}</div>`);
+ else if(f.stage==='answer'){h+=`<div class='lab'>пишите ответы</div>`;f.order.forEach(id=>h+=`<div class='ans'>${nm(id)}: ${f.ans[id]?ic('check')+' ответил':'пишет…'}</div>`);
   if(mine&&!f.ans[myId])h+=`<input id='an' placeholder='Твой ответ'><button data-a='sendans'>Отправить</button>`;
   if(isHost)h+=`<button data-a='reveal'>Показать ответы</button>`}
  else{h+=`<div class='lab'>ответы</div>`;f.order.forEach(id=>{const r=f.res[id];h+=`<div class='ans'>${nm(id)}: <b>${esc(f.ans[id]||'—')}</b> (ставка ${f.bets[id]}) ${r===undefined?'':r?`<span class='ok'>верно</span>`:`<span class='no'>неверно</span>`}`;
    if(isHost&&r===undefined)h+=`<div class='row'><button class='g' data-a='mark' data-v='${id}:1'>Верно</button><button class='r' data-a='mark' data-v='${id}:0'>Неверно</button></div>`;h+='</div>'});
-  if(f.stage==='done'){const w=[...S.players].sort((a,b)=>b.score-a.score)[0];h+=`<div class='win'>🏆 ${esc(w.name)}: ${w.score}</div>`+(isHost?`<button data-a='again'>Играть заново</button>`:'')}}
+  if(f.stage==='done'){const w=[...S.players].sort((a,b)=>b.score-a.score)[0];h+=`<div class='win'>${ic('cup')}<span>${esc(w.name)}: ${w.score}</span></div>`+(isHost?`<button data-a='again'>Играть заново</button>`:'')}}
  return h}
 function home(){return `<div class='logo'>СВОЯК<span>//онлайн</span></div><p class='mute'>Своя игра для компании. Ведущий читает вопросы, остальные жмут «Я!».</p><div class='card'><div class='lab'>твоё имя</div><input id='n' maxlength='20' placeholder='Как тебя звать'><button data-a='mk'>Создать комнату: я ведущий</button></div><div class='card'><div class='lab'>код комнаты</div><input id='c' maxlength='8' value='${esc(QR)}' placeholder='ABCD'><button class='s' data-a='jn'>Войти как игрок</button></div><p style='color:var(--bad)'>${esc(err)}</p>`}
 function sounds(){const k=S.cur?S.round+'-'+S.cur.c+'-'+S.cur.i:null;
@@ -220,7 +240,7 @@ function render(){
  if(!code){paint(home());return}
  S=isHost?pub(true):V;
  if(!S){paint(`<div class='card c'><div class='lab'>комната</div><div class='code'>${code}</div><p class='mute'>Подключаемся, ждём ведущего…</p></div>`);return}
- let h=`<div class='top'><span>СВОЯК//ОНЛАЙН · <b>${code}</b> · 🎤 ${esc(S.hostName)}</span><button class='chip' data-a='mute'>${muted?'🔇 звук выкл':'🔊 звук'}</button></div>`+players();
+ let h=`<div class='top'><span>СВОЯК//ОНЛАЙН · <b>${code}</b> · ${ic('mic')} ${esc(S.hostName)}</span><button class='chip' data-a='mute'>${ic(muted?'off':'on')}${muted?'звук выкл':'звук'}</button></div>`+players();
  h+=S.phase==='lobby'?lobby():S.phase==='board'?boardHtml():finalHtml();
  paint(h);sounds()}
 render();
