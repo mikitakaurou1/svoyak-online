@@ -1,27 +1,31 @@
-export function validate(bank){
- const ids=new Set(),texts=new Set();
- for(const q of bank){if(!q.id||ids.has(q.id)||texts.has(q.q))throw Error('Duplicate question');ids.add(q.id);texts.add(q.q);
- if(!q.cat||!q.why||!q.q||![2,3].includes(q.level)||!Array.isArray(q.options)||q.options.length!==4||q.options.some(s=>typeof s!=='string'||!s.trim())||new Set(q.options.map(s=>s.trim().toLowerCase())).size!==4||!Number.isInteger(q.correct)||q.correct<0||q.correct>3)throw Error('Invalid '+q.id)}
- if(bank.length<21)throw Error('Need 21 questions');return true}
-export function shuffle(a,rng=Math.random){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-export function schedule(bank,seen=[]){
- const used=new Set(),counts={},recent=new Set(seen),deck=[];
- for(let i=0;i<21;i++){let a=bank.filter(q=>!used.has(q.id)&&(i<10?q.level===2:q.level===3));if(!a.length)a=bank.filter(q=>!used.has(q.id));
- const fresh=a.filter(q=>!recent.has(q.id));if(fresh.length)a=fresh;
- const min=Math.min(...a.map(q=>counts[q.cat]||0));a=a.filter(q=>(counts[q.cat]||0)===min);const q=shuffle(a)[0];used.add(q.id);counts[q.cat]=(counts[q.cat]||0)+1;
- const order=shuffle([0,1,2,3]);deck.push({...q,options:order.map(j=>q.options[j]),correct:order.indexOf(q.correct)})}return deck}
-export function createRoom(code,id,name){return{code,host:id,epoch:Date.now().toString(36)+Math.random().toString(36).slice(2),rev:0,phase:'lobby',players:[{id,name,score:0}],deck:[],index:0,answers:{},bets:{},ready:[],deadline:0,result:null}}
-export function start(r,deck,now){if(r.phase!=='lobby'||!r.players.length)return false;r.players.forEach(p=>p.score=0);r.deck=deck;r.index=0;r.bets={};open(r,now);return true}
-function open(r,now){r.phase=r.index===20?'final':'question';r.answers={};r.ready=[];r.result=null;r.deadline=now+(r.index===20?35000:28000)}
-export function token(r){return r.epoch+':'+r.index+':'+r.phase}
-export function input(r,m,now){const p=r.players.find(p=>p.id===m.id);if(!p||m.token!==token(r))return false;
- if(m.t==='answer'&&['question','final'].includes(r.phase)&&now<r.deadline&&!(m.id in r.answers)&&Number.isInteger(m.option)&&m.option>=0&&m.option<4){r.answers[m.id]=m.option;return true}
- if(m.t==='bet'&&r.phase==='bets'&&now<r.deadline&&!(m.id in r.bets)&&Number.isInteger(m.value)&&m.value>=0&&m.value<=Math.max(0,p.score)){r.bets[m.id]=m.value;return true}
- if(m.t==='ready'&&r.phase==='result'&&!r.ready.includes(m.id)){r.ready.push(m.id);return true}return false}
-export function tick(r,now){if(r.phase==='result'){if(now<r.deadline&&r.ready.length<r.players.length)return false;r.index++;if(r.index===20){r.phase='bets';r.bets={};r.deadline=now+30000;r.result=null}else open(r,now);return true}
- if(r.phase==='bets'&&now>=r.deadline){open(r,now);return true}
- if(!['question','final'].includes(r.phase)||now<r.deadline)return false;
- const q=r.deck[r.index],final=r.phase==='final',value=r.index<10?200:400;
- const details=r.players.map(p=>{const selected=r.answers[p.id],ok=selected===q.correct,stake=final?(r.bets[p.id]||0):value,delta=final?(ok?stake:-stake):(ok?value:0);p.score+=delta;return{id:p.id,selected:Number.isInteger(selected)?selected:null,ok,delta,stake}});
- r.result={q:q.q,options:q.options,correct:q.correct,why:q.why,details};r.phase=final?'done':'result';r.ready=[];r.deadline=now+14000;return true}
-export function view(r,now){const q=r.deck[r.index],asking=['question','final'].includes(r.phase);return{code:r.code,host:r.host,epoch:r.epoch,rev:r.rev,phase:r.phase,index:r.index,players:r.players.map(p=>({...p})),deadline:r.deadline,serverNow:now,answered:Object.keys(r.answers),betted:Object.keys(r.bets),ready:r.ready.slice(),token:token(r),cat:q?.cat||null,question:asking?{q:q.q,options:q.options.slice(),value:r.index===20?null:r.index<10?200:400}:null,result:['result','done'].includes(r.phase)?r.result:null}}
+export function validate(bank){const ids=new Set();for(const q of bank){if(ids.has(q.id)||!q.id||!q.cat||!q.why||!Array.isArray(q.options)||q.options.length!==4||new Set(q.options).size!==4||!Number.isInteger(q.correct)||q.correct<0||q.correct>3)throw Error('Invalid bank');ids.add(q.id)}return true}
+export function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function prepared(q){const order=shuffle([0,1,2,3]);return{...q,options:order.map(i=>q.options[i]),correct:order.indexOf(q.correct)}}
+export function setup(bank,seen=[]){validate(bank);const cats=[...new Set(bank.map(q=>q.cat))],used=new Set(),boards=[];if(cats.length<5)throw Error('Need five categories');
+ for(let r=0;r<2;r++){const names=shuffle(cats).slice(0,5);boards.push(names.map(cat=>{const a=shuffle(bank.filter(q=>q.cat===cat&&!used.has(q.id))).sort((a,b)=>(seen.includes(a.id)?1:0)-(seen.includes(b.id)?1:0));if(a.length<5)throw Error('Need 10 questions per category');const chosen=a.slice(0,5).sort((a,b)=>a.level-b.level);return{cat,qs:chosen.map((q,i)=>{used.add(q.id);return{...prepared(q),value:(i+1)*100*(r+1)}})}}))}
+ const remain=shuffle(bank.filter(q=>!used.has(q.id))),finals=[];for(const q of remain)if(!finals.some(x=>x.cat===q.cat)&&finals.length<3)finals.push(prepared(q));if(!finals.length)throw Error('Need spare final questions');return{boards,finals}}
+export function createRoom(code,host,name){return{code,host,epoch:Date.now().toString(36)+Math.random().toString(36).slice(2),rev:0,seq:0,phase:'lobby',players:[{id:host,name,score:0}],round:0,boards:[],finals:[],used:[],chooser:host,cur:null,result:null,notice:null,deadline:0,f:null}}
+function phase(r,s,now,ms=0){r.phase=s;r.seq++;r.deadline=ms?now+ms:0}
+function nextId(r,id){const i=r.players.findIndex(p=>p.id===id);return r.players[(i+1)%r.players.length].id}
+function lower(r){return [...r.players].sort((a,b)=>a.score-b.score)[0].id}
+export function token(r){return r.epoch+':'+r.seq}
+export function start(r,pack,now){if(r.phase!=='lobby')return false;r.boards=pack.boards;r.finals=pack.finals;r.players.forEach(p=>p.score=0);r.round=0;r.used=[];r.cur=null;r.result=null;r.notice=null;r.f=null;r.chooser=r.players[Math.floor(Math.random()*r.players.length)].id;phase(r,'board',now,30000);return true}
+function available(r){return r.players.filter(p=>!r.cur.tried.includes(p.id))}
+function reveal(r,now,winner=null){const c=r.cur;r.result={q:c.q.q,answer:c.q.options[c.q.correct],why:c.q.why,winner,value:c.q.value,id:c.q.id};r.chooser=winner||nextId(r,c.picker);phase(r,'result',now,4500)}
+function miss(r,id,now,reason){const c=r.cur;if(!c.tried.includes(id))c.tried.push(id);r.players.find(p=>p.id===id).score-=c.q.value;r.notice={id,text:reason,delta:-c.q.value};c.active=null;if(!available(r).length)reveal(r,now);else phase(r,'buzz',now,15000)}
+function finalStart(r,now){const order=[...r.players].filter(p=>p.score>0).sort((a,b)=>a.score-b.score).map(p=>p.id);r.cur=null;r.result=null;r.f={order,struck:[],turn:0,bets:{},answers:{},details:[]};if(!order.length){phase(r,'done',now);return}phase(r,r.finals.length>1?'strike':'bets',now,r.finals.length>1?20000:30000)}
+function back(r,now){r.cur=null;r.result=null;r.notice=null;const count=r.used.filter(k=>k.startsWith(r.round+':')).length;if(count===25){if(r.round===0){r.round=1;r.chooser=lower(r);phase(r,'board',now,30000)}else finalStart(r,now)}else phase(r,'board',now,30000)}
+function finalQ(r){return r.finals.find((q,i)=>!r.f.struck.includes(i))}
+function strike(r,i,now){r.f.struck.push(i);r.f.turn++;const count=r.finals.length-r.f.struck.length;phase(r,count===1?'bets':'strike',now,count===1?30000:20000)}
+function finalResolve(r,now){const q=finalQ(r);r.f.details=r.f.order.map(id=>{const p=r.players.find(p=>p.id===id),a=r.f.answers[id],stake=r.f.bets[id]||0,ok=a===q.correct,delta=ok?stake:-stake;p.score+=delta;return{id,selected:Number.isInteger(a)?q.options[a]:null,stake,ok,delta}});r.result={q:q.q,answer:q.options[q.correct],why:q.why,id:q.id};phase(r,'done',now)}
+export function input(r,m,now){if(!m||m.token!==token(r)||!r.players.some(p=>p.id===m.id))return false;if(r.deadline&&now>=r.deadline)return false;
+ if(r.phase==='board'&&m.t==='pick'&&m.id===r.chooser&&Number.isInteger(m.c)&&Number.isInteger(m.i)&&m.c>=0&&m.c<5&&m.i>=0&&m.i<5){const key=r.round+':'+m.c+':'+m.i;if(r.used.includes(key))return false;r.used.push(key);r.cur={q:r.boards[r.round][m.c].qs[m.i],picker:m.id,active:m.id,tried:[],wrong:[]};r.notice=null;phase(r,'answer',now,20000);return true}
+ if(r.phase==='answer'&&m.t==='answer'&&m.id===r.cur.active&&Number.isInteger(m.option)&&m.option>=0&&m.option<4&&!r.cur.wrong.includes(m.option)){const c=r.cur;if(m.option===c.q.correct){r.players.find(p=>p.id===m.id).score+=c.q.value;reveal(r,now,m.id)}else{c.wrong.push(m.option);miss(r,m.id,now,'Неверно')}return true}
+ if(r.phase==='buzz'&&m.t==='buzz'&&!r.cur.tried.includes(m.id)){r.cur.active=m.id;phase(r,'answer',now,20000);return true}
+ if(r.phase==='buzz'&&m.t==='pass'&&!r.cur.tried.includes(m.id)){r.cur.tried.push(m.id);if(!available(r).length)reveal(r,now);return true}
+ if(r.phase==='result'&&m.t==='next'&&m.id===r.chooser){back(r,now);return true}
+ if(r.phase==='strike'&&m.t==='strike'&&m.id===r.f.order[r.f.turn%r.f.order.length]&&Number.isInteger(m.i)&&m.i>=0&&m.i<r.finals.length&&!r.f.struck.includes(m.i)){strike(r,m.i,now);return true}
+ if(r.phase==='bets'&&m.t==='bet'&&r.f.order.includes(m.id)&&!(m.id in r.f.bets)&&Number.isInteger(m.value)&&m.value>=0&&m.value<=r.players.find(p=>p.id===m.id).score){r.f.bets[m.id]=m.value;if(r.f.order.every(id=>id in r.f.bets))phase(r,'final',now,35000);return true}
+ if(r.phase==='final'&&m.t==='finalAnswer'&&r.f.order.includes(m.id)&&!(m.id in r.f.answers)&&Number.isInteger(m.option)&&m.option>=0&&m.option<4){r.f.answers[m.id]=m.option;if(r.f.order.every(id=>id in r.f.answers))finalResolve(r,now);return true}return false}
+export function tick(r,now){if(!r.deadline||now<r.deadline)return false;if(r.phase==='board'){r.chooser=nextId(r,r.chooser);phase(r,'board',now,30000)}else if(r.phase==='answer')miss(r,r.cur.active,now,'Время истекло');else if(r.phase==='buzz')reveal(r,now);else if(r.phase==='result')back(r,now);else if(r.phase==='strike'){const i=r.finals.findIndex((q,i)=>!r.f.struck.includes(i));strike(r,i,now)}else if(r.phase==='bets')phase(r,'final',now,35000);else if(r.phase==='final')finalResolve(r,now);else return false;return true}
+export function view(r,now){const q=r.cur?.q,f=r.f,fq=f?finalQ(r):null;return{code:r.code,host:r.host,epoch:r.epoch,rev:r.rev,token:token(r),phase:r.phase,round:r.round,serverNow:now,deadline:r.deadline,players:r.players.map(p=>({...p})),chooser:r.chooser,board:r.boards[r.round]?.map((c,ci)=>({cat:c.cat,cells:c.qs.map((q,i)=>({value:q.value,used:r.used.includes(r.round+':'+ci+':'+i)}))}))||[],question:q&&['answer','buzz'].includes(r.phase)?{q:q.q,cat:q.cat,options:q.options,value:q.value,active:r.cur.active,tried:r.cur.tried.slice(),wrong:r.cur.wrong.slice()}:null,notice:r.notice,result:r.result,f:f?{order:f.order,struck:f.struck,cats:r.finals.map(q=>q.cat),turn:f.order.length?f.order[f.turn%f.order.length]:null,cat:fq?.cat,betted:Object.keys(f.bets),answered:Object.keys(f.answers),question:r.phase==='final'?{q:fq.q,options:fq.options}:null,details:r.phase==='done'?f.details:[]}:null}}
