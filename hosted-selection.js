@@ -1,10 +1,11 @@
 import {LEGACY} from './hosted-bank.js?v=1';
 import {BANKS,LABELS} from './difficulty-bank.js?v=1';
+import {EXTRA} from './hosted-extra.js?v=1';
 export {LABELS};
 export const normalize=s=>String(s).normalize('NFKC').toLowerCase().replace(/ё/g,'е').replace(/[^\p{L}\p{N}]/gu,'');
 export function pool(difficulty){if(!Object.hasOwn(LABELS,difficulty))throw Error('Invalid difficulty');const cats=new Map(),used=new Set();
  const add=(cat,q)=>{const key=normalize(q.q);if(!key||used.has(key))return;used.add(key);if(!cats.has(cat))cats.set(cat,[]);cats.get(cat).push({...q,key})};
- for(const t of LEGACY)for(const q of t.q)if(q.difficulty===difficulty)add(t.n,q);
+ for(const t of [...LEGACY,...EXTRA])for(const q of t.q)if(q.difficulty===difficulty)add(t.n,q);
  for(const q of BANKS[difficulty])add(q.cat,{q:q.q,a:q.options[q.correct],rank:q.level||3});
  return [...cats].map(([n,q])=>({n,q})).filter(t=>t.q.length>=5)}
 export function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
